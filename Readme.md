@@ -12,11 +12,12 @@ We are in the process of providing cleaned versions of the initial Chakras from 
 
 ---
 
-## Chakra Bandha and Navmank Bandha (Coming Soon)
+## Chakra Bandha and Navmank Bandha (Available)
 - These two Bandhas are sufficient to decode the entirety of the first volume (Khand).  
 - **Output**: Applying these Bandhas reveals Kannada text. Extracting additional languages requires further steps detailed below.  
 - **Implementation**: C++ algorithms.  
 - **Try It**: Simulations to run these algorithms locally (planned).
+- Try any bandha of your creation on a chakra!
 
 ---
 
