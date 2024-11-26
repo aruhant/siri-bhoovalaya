@@ -20,6 +20,11 @@ We are in the process of providing cleaned versions of the initial Chakras from 
 - Try any bandha of your creation on a chakra!
 
 ---
+## Devnaagri Substitution Table (Available)
+- Support for characters present in this text but not in UNICODE
+- Kannada Substitution Table (coming soon)
+
+---
 
 ## Decoding Multiple Languages (Coming Soon)
 - From the resultant Kannada text, specific predefined patterns allow extraction of other languages, including Prakrit, Sanskrit, Tamil, Telugu, and more.  
