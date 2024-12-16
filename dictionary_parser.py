@@ -8,6 +8,10 @@ def read_file(file_name):
     words = set()
     for line in lines:
         line = re.sub(r'\([^)]*\)', '', line)
+        line = re.sub(' +', ' ', line)
+        line = line.replace(' ಂ', 'ಂ')
+        line = line.replace(')', ' ')
+        line = line.replace('(', ' ')
         # split the line into words by all characters that are no-word characters
         # print all non-word characters in word for debugging
         #
@@ -34,6 +38,8 @@ words = read_file(input_file)
 # print the number of words in the file
 print(len(words))
 # write the words to the output file
+# sort words before writing them to the file
+words = sorted(words)
 write_file(output_file, words)
 
 
