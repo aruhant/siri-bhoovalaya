@@ -5,7 +5,7 @@ Siri Bhoovalaya is a unique ancient Jain manuscript composed entirely in a numer
 
 ---
 
-## Cleaned-Up Chakras (Coming Soon)
+## Cleaned-Up Chakras (Available)
 We are in the process of providing cleaned versions of the initial Chakras from the first chapter.  
 - **Current Progress**: 80 Chakras (to be added soon).  
 - **Format**: Available as spreadsheets, including transposed versions for easier analysis.
@@ -22,7 +22,7 @@ We are in the process of providing cleaned versions of the initial Chakras from 
 ---
 ## Devnaagri Substitution Table (Available)
 - Support for characters present in this text but not in UNICODE
-- Kannada Substitution Table (coming soon)
+- Kannada Substitution Table (available)
 
 ---
 
@@ -32,8 +32,12 @@ We are in the process of providing cleaned versions of the initial Chakras from 
 - **Next Steps**: Simulations to demonstrate these processes (planned).
 
 ---
+## Cleaned Halegannada wordlist with 200,000 words (available) 
+- Secondary clean-up and Polishing (coming soon)
+- Expanded comprehensive dictionary (coming soon)
+---
 
-## Partitioning a Sequence of Characters into Words  
+## Partitioning a Sequence of Characters into Words (Coming soon) 
 This is one of the most complex challenges. Word lists for ancient languages or historical forms of modern languages are scarce. Additionally:  
 - Collaboration with language experts may be necessary to leverage grammatical constructs for better optimization.  
 - Procuring literature from the era, especially digitized texts with selectable content, is ongoing to support this effort.
