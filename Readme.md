@@ -29,25 +29,31 @@ We are in the process of providing cleaned versions of the initial Chakras from 
 ## Decoding Multiple Languages (Coming Soon)
 - From the resultant Kannada text, specific predefined patterns allow extraction of other languages, including Prakrit, Sanskrit, Tamil, Telugu, and more.  
 - **Current Work**: Algorithm implementation for multilingual decoding.  
-- **Next Steps**: Simulations to demonstrate these processes (planned).
+- **Next Steps**: Simulations to demonstrate these processes (Planned).
 
 ---
-## Cleaned Halegannada wordlist with 200,000 words (available) 
+## Cleaned Halegannada wordlist with 200,000 words (Available) 
 - Secondary clean-up and Polishing (coming soon)
 - Expanded comprehensive dictionary (coming soon)
 ---
 
-## Partitioning a Sequence of Characters into Words (Coming soon) 
-This is one of the most complex challenges. Word lists for ancient languages or historical forms of modern languages are scarce. Additionally:  
+## Partitioning a Sequence of Characters into Words (Available) 
+This is one of the more challenging aspects. Word lists for ancient languages or historical forms of modern languages are scarce. Additionally:  
 - Collaboration with language experts may be necessary to leverage grammatical constructs for better optimization.  
 - Procuring literature from the era, especially digitized texts with selectable content, is ongoing to support this effort.
-
+---
 ### Current and Planned Approaches  
-- **Using Basic NLP Techniques and String Processing Algorithms** (Coming Soon).  
-- **Incorporating Statistical Analysis and Semantic Rules for Optimization** (Planned).
+- **Using Basic NLP Techniques and String Processing Algorithms** (Available).  
+- **Incorporating Statistical Analysis and Semantic Rules for Optimization** (Coming soon).
 
 ---
-
+## Examples (Available)
+- Demo
+- Play around with the first 8 chakras (courtesy of Shri Anil K. Jain)
+- Try Chakra Bandha, Navmank Bandha, or Bandhas of your choosing
+- Represent in scripts based on your convenience (Kannada and Devnagari support available with more coming soon)
+- Get the decoded sequence of characters and then the final shlokas
+--
 ## Packaged Simulations (Planned)  
 Creating a comprehensive decoding system with all the above features will require significant computing power.  
 - **Crowdsourced Computing**: We plan to allow users to run the software locally, contributing to discoveries.  
