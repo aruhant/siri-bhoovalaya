@@ -77,6 +77,15 @@ def cleanLine(line):
     line = line.replace('ಂಂ', 'ಂ')
     line = line.replace(' ಃ', 'ಃ')
     line = line.replace('ೞ', 'ಳ')
+    line = line.replace( 'ಱ', 'ರ')
+    line = line.replace('ೇ', 'ೇ')
+    line = line.replace('ೈ', 'ೈ')
+    line = line.replace('\u200c', '')
+    line = line.replace('\u200d', '')
+    line = line.replace('\u200b', '')
+    line = line.replace('ೖ', 'ೃ')
+
+
     for c in to_remove:
         line = line.replace(c, '')
 
@@ -97,9 +106,9 @@ def combine_dict(dict1, dict2, dict3):
 
 
 #readPickle('dictionary.pkl')
-words = read_txt('dictionary_in.txt')
+words = read_txt('./dictionary/dictionary_in.txt')
 print(len(words))
-write_file('dictionary_out.txt', words)
+write_file('./dictionary/modified_dictionary_out.txt', words)
 #print(invalid_characters)
 #write invlaid characters to a file called invalid_characters.txt
 #write_file('invalid_characters.txt', invalid_characters)
