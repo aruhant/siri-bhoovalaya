@@ -1,5 +1,5 @@
 import { Chakra } from "./chakra.js";
-import { Sequence2D, SequenceFile, Word } from "./sequence.js";
+import { Sequence2D, Word } from "./sequence.js";
 import { Logger } from "./utils/logger.js";
 import { 
   BandhaFile} from "./bandha.js";
@@ -13,7 +13,6 @@ import * as path from 'path';
 
 
 interface ProgramOptions {
-  output?: string;
   chakra?: string;
   bandha?: string;
   script?: string;
@@ -24,8 +23,7 @@ const program = new Command();
 program
   .option('-c, --chakra <chakra>', 'Chakra file')
   .option('-b, --bandha <bandha>', 'Bandha file')
-  .option('-s, --script <script>', 'Script file')
-  .option('-o, --output <output>', 'Output file');
+  .option('-s, --script <script>', 'Script file');
 
 program.parse(process.argv);
 
@@ -47,10 +45,6 @@ if (options.bandha) {
 if (options.script) {
   Logger.infoBr(`Script file: ${options.script}`);
 } 
-if (options.output) {
-  Logger.infoBr(`Output file: ${options.output}`);
-}
-
 
 
 
@@ -68,30 +62,20 @@ Logger.info(result.toString());
 //console.log(devanagari_script);
 */
 
+
 /*
-let script = devanagari_script;
 let word = Word.fromNumbers([43,1,  13, 3, 30, 13, 4, 62,40, 54,3])
 Logger.info(script.wordToScript(word));
 //Logger.info(script.sequenceToScript(word));
 
-Logger.info(script.scriptToWord("अ...खीkख्घoआाकोो...तंश").toString());
+Logger.info(script.scriptToWord("अ...खीkख्घoआाकोो...तळश").toString());
 Logger.info(script.scriptToWord("तळााग्ळिःड्राा").toString());
-//  now do हम​
-Logger.info(script.scriptToWord("मह​").toString());
-
-
 */
-const dictionaryContent = fs.readFileSync(options.script, 'utf-8');
-const words = dictionaryContent.split(',').map(word => word.trim()).filter(word => word.length > 0);
+
+
+const dictionaryContent = fs.readFileSync('dictionary.txt', 'utf-8');
+const words = dictionaryContent.split('\n').map(line => line.trim()).filter(line => line.length > 0);
 
 const encodedWords = words.map(word => devanagari_script.scriptToWord(word));
-const decodedWords = encodedWords.map(word => devanagari_script.wordToScript(word));
 
-// compare words and decodedWords. if there is a mismatch, log the word and decodedWord and the word doesnt incluude one of the ignoreCharacters so as to not log the same error multiple times
-for (let i = 0; i < words.length; i++) {
-  if (words[i] !== decodedWords[i] && !words[i].split('').some(char => devanagari_script.ignoreCharacters.includes(char))) {
-    Logger.warn(`Mismatch: ${words[i]} => ${decodedWords[i]}`);
-  }
-}
-
-fs.writeFileSync(options.output, decodedWords.join(',\n'));
+fs.writeFileSync('encoded.txt', encodedWords.map(word => word.toString()).join('\n'), 'utf-8');

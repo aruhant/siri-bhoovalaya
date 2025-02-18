@@ -1,5 +1,5 @@
 import { Chakra } from './chakra.js';
-import { Sequence } from './sequence.js';
+import { Sequence, Transposed } from './sequence.js';
 import fs from 'fs';
 export class Bandha {
     private bandha: {i:number,j:number}[];
@@ -13,8 +13,8 @@ export class Bandha {
         this.size = Math.sqrt(bandha.length);
     }
 
-    apply(chakra: Chakra): Sequence {
-        const result:Sequence = new Sequence('');
+    apply(chakra: Chakra): Transposed {
+        const result:Transposed = new Sequence('');
         this.bandha.forEach( (unit) => {
             result.append(chakra.getUnit(unit.i, unit.j));
         });

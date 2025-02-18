@@ -34,7 +34,7 @@ export class Chakra {
     */
 
     getUnit(i: number, j: number): Unit {
-        return this.chakra.getUnit(i, j);
+        return this.chakra.unitAt(i, j);
     }
 
     toString() {
