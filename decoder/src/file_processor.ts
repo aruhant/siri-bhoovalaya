@@ -2,57 +2,119 @@ import { Sequence, Word } from "./sequence.js";
 import * as fs from 'fs';
 import { Script } from "./script.js";
 
-enum Encoding {
+export enum Encoding {
     numerical,
     encoded_string,
     script
 }
 
 export class SequenceFile {
-    static read(filename: string, encoding: Encoding = Encoding.encoded_string, script?: Script, delimiter?: string): Sequence {
-        let data: string = fs.readFileSync(filename, 'utf8');
-
+    static readList(filename: string, encoding: Encoding = Encoding.encoded_string, script?: Script, inline_delimiter?: string, endline_delimeter = "\n"): Sequence[] {
+        let read: string[] = fs.readFileSync(filename, 'utf8').split(endline_delimeter).filter(line => line.trim() != '');
         switch (encoding) {
             case Encoding.numerical:
-                if (delimiter == undefined) {
-                    delimiter = ',';
-                }
-                return Sequence.fromNumbers((data.trim().split(delimiter)).map(Number));
+                inline_delimiter = inline_delimiter ?? ',';
+                return read.map(line => Sequence.fromNumbers(line.trim().split(inline_delimiter).map(Number)));
             case Encoding.script:
-                if (!script) {
-                    throw new Error("Script is required for script encoding");
+                if (script == undefined) {
+                    throw new Error("Script is required to read Sequence from script encoded file");
                 }
-                return script.scriptToWord(delimiter != undefined ? data.trim().split(delimiter).join('') : data.trim());
-
+                inline_delimiter = inline_delimiter ?? ' ';
+                return read.map(line => script.scriptToSequence(line.trim().split(inline_delimiter)));
             case Encoding.encoded_string:
-                return new Word(delimiter != undefined ? data.split(delimiter).join('') : data);
+                inline_delimiter = inline_delimiter ?? '';
+                return read.map(line => new Sequence(line.trim().split(inline_delimiter).join('')));
+
             default:
-                throw new Error("Invalid encoding");
+                throw new Error("Invalid encoding to read Sequence from file");
         }
     }
-    static write(filename: string, sequence: Sequence, encoding: Encoding = Encoding.encoded_string, script?: Script, delimiter?: string) {
-        let data: string;
+    static writeList(filename: string, sequence: Sequence[], encoding: Encoding = Encoding.encoded_string, script?: Script, inline_delimiter?: string, endline_delimeter = "\n") {
+        let toWrite: string[];
         switch (encoding) {
             case Encoding.numerical:
-                if (delimiter == undefined) {
-                    delimiter = ',';
+                if (inline_delimiter == undefined) {
+                    inline_delimiter = ',';
                 }
-                data = sequence.toNumbers().join(delimiter);
+                toWrite = sequence.map(seq => seq.toNumbers().join(inline_delimiter));
                 break;
             case Encoding.script:
                 if (!script) {
-                    throw new Error("Script is required for script encoding");
+                    throw new Error("Script is required to write Sequence as script encoded file");
                 }
-                data = delimiter != undefined ? script.wordToScript(Word.fromSequence(sequence)).split("").join(delimiter) : script.wordToScript(Word.fromSequence(sequence));
+                inline_delimiter = inline_delimiter ?? ' ';
+                toWrite = sequence.map(seq => script.sequenceToScript(seq).join(inline_delimiter));
                 break;
             case Encoding.encoded_string:
-                data = delimiter != undefined ? sequence.getEncodedString().split("").join(delimiter) : sequence.getEncodedString();
+                inline_delimiter = inline_delimiter ?? '';
+                toWrite = sequence.map(seq => seq.toEncodedString().split("").join(inline_delimiter));
                 break;
             default:
-                throw new Error("Invalid encoding");
+                throw new Error("Invalid encoding to write Sequence to file");
         }
-        fs.writeFileSync(filename, data);
+        fs.writeFileSync(filename, toWrite.join(endline_delimeter));
     }
-
-
+    static readLine(filename: string, encoding: Encoding = Encoding.encoded_string, script?: Script, inline_delimiter?: string): Sequence {
+        return SequenceFile.readList(filename, encoding, script, inline_delimiter)[0];
 }
+    static writeLine(filename: string, sequence: Sequence, encoding: Encoding = Encoding.encoded_string, script?: Script, inline_delimiter?: string) {
+        SequenceFile.writeList(filename, [sequence], encoding, script, inline_delimiter);
+    }
+}
+
+export class WordFile {
+    static readList(filename: string, encoding: Encoding = Encoding.encoded_string, script?: Script, inline_delimiter?: string, endline_delimeter = "\n"): Word[] {
+        let read: string[] = fs.readFileSync(filename, 'utf8').split(endline_delimeter).filter(line => line.trim() != '');
+        switch (encoding) {
+            case Encoding.numerical:
+                inline_delimiter = inline_delimiter ?? ',';
+                return read.map(line => Word.fromNumbers(line.trim().split(inline_delimiter).map(Number)));
+            case Encoding.script:
+                if (script == undefined) {
+                    throw new Error("Script is required to read Word from script encoded file");
+                }
+                inline_delimiter = inline_delimiter ?? '';
+                return read.map(line => script.scriptToWord(line.trim().split(inline_delimiter).join('')));
+            case Encoding.encoded_string:
+                inline_delimiter = inline_delimiter ?? '';
+                return read.map(line => new Word(line.trim().split(inline_delimiter).join('')));
+
+            default:
+                throw new Error("Invalid encoding to read Word from file");
+        }
+    }
+    static writeList(filename: string, words: Word[], encoding: Encoding = Encoding.encoded_string, script?: Script, inline_delimiter?: string, endline_delimeter = "\n") {
+        let toWrite: string[];
+        switch (encoding) {
+            case Encoding.numerical:
+                if (inline_delimiter == undefined) {
+                    inline_delimiter = ',';
+                }
+                toWrite = words.map(word => word.toNumbers().join(inline_delimiter));
+                break;
+            case Encoding.script:
+                if (!script) {
+                    throw new Error("Script is required to write Word as script encoded file");
+                }
+                inline_delimiter = inline_delimiter ?? '';
+                toWrite = words.map(word => script.wordToScript(word).split("").join(inline_delimiter));
+                break;
+            case Encoding.encoded_string:
+                inline_delimiter = inline_delimiter ?? '';
+                toWrite = words.map(word => word.toEncodedString().split("").join(inline_delimiter));
+                break;
+            default:
+                throw new Error("Invalid encoding to write Word to file");
+        }
+        fs.writeFileSync(filename, toWrite.join(endline_delimeter));
+    }
+    static readLine(filename: string, encoding: Encoding = Encoding.encoded_string, script?: Script, inline_delimiter?: string): Word {
+        return WordFile.readList(filename, encoding, script, inline_delimiter)[0];
+    }
+    static writeLine(filename: string, word: Word, encoding: Encoding = Encoding.encoded_string, script?: Script, inline_delimiter?: string) {
+        WordFile.writeList(filename, [word], encoding, script, inline_delimiter);
+    }
+}
+
+
+

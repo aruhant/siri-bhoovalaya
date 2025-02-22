@@ -74,8 +74,8 @@ export class Logger {
     if (Logger.loggingOn) console.log(runningColor(x));
   };
 
-  static tracker(x: string) {
-    console.log(trackerColor(`\n${x}` + clc.erase.lineRight + '\n'));
+  static progress(x: string) {
+    process.stdout.write(trackerColor(` ${x}                                                           `  +  clc.move.left(1000)));
   };
 
   static clear() {

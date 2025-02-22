@@ -1,5 +1,5 @@
 import fs from 'fs';
-export enum Units{
+export enum Units {
     _1,
     _2,
     _3,
@@ -64,15 +64,15 @@ export enum Units{
     _62,
     _63,
     _64
-    }
-
+}
+// ToDo: extend string
 export class Sequence {
     private sequence: string;
 
-    append(unit : Unit) {
+    append(unit: Unit) {
         this.sequence += unit.toEncodedString();
     }
-    
+
     constructor(encodedString: string) {
         this.sequence = encodedString.split('').map(s => new Unit(s)).map(u => u.toEncodedString()).join('');
         if (this.sequence !== encodedString) {
@@ -83,19 +83,19 @@ export class Sequence {
     static fromUnits(units: Unit[]): Sequence {
         return new Sequence(units.map(u => u.toEncodedString()).join(''));
     }
-    
+
     static fromNumbers(numbers: number[]): Sequence {
         return new Sequence(numbers.map(n => Unit.numberToEncodedString(n)).join(''));
     }
     unitAt(i: number): Unit {
         return new Unit(this.sequence[i]);
     }
-    
+
     toNumbers(): number[] {
         return this.sequence.split('').map(Unit.encodedStringToNumber);
     }
-    
-    getEncodedString(): string {
+
+    toEncodedString(): string {
         return this.sequence;
     }
     getUnits(): Unit[] {
@@ -107,7 +107,11 @@ export class Sequence {
     length(): number {
         return this.sequence.length;
     }
+    slice(start: number, end: number): Sequence {
+        return new Sequence(this.sequence.slice(start, end));
+    }
     
+
 }
 
 export class Sequence2D {
@@ -115,7 +119,10 @@ export class Sequence2D {
     private size: number;
     constructor(sequence: Sequence) {
         this.sequence = sequence;
-        this.size = Math.sqrt (sequence.length());
+        this.size = Math.sqrt(sequence.length());
+        if (this.size % 1 !== 0) {
+            throw new Error('Invalid sequence length');
+    }
     }
 
     unitAt(i: number, j: number): Unit {
@@ -125,13 +132,14 @@ export class Sequence2D {
     getSize(): number {
         return this.size;
     }
+    
 
     toString() {
         const numbers = this.sequence.toNumbers();
         let result = '';
         for (let i = 0; i < this.size; i++) {
             for (let j = 0; j < this.size; j++) {
-                result +=  `${numbers[i * this.size + j]}`.padStart(3) ;
+                result += `${numbers[i * this.size + j]}`.padStart(3);
 
             }
             result += '\n';
@@ -142,7 +150,7 @@ export class Sequence2D {
 
 export class Transposed extends Sequence {
     constructor(sequence: Sequence) {
-        super(sequence.getEncodedString());
+        super(sequence.toEncodedString());
     }
 
 }
@@ -156,26 +164,26 @@ export class Word extends Sequence {
     }
 
     static fromNumbers(numbers: number[]): Word {
-        return new Word(Sequence.fromNumbers(numbers).getEncodedString());
+        return new Word(Sequence.fromNumbers(numbers).toEncodedString());
     }
 
     static fromUnits(units: Unit[]): Word {
-        return new Word(Sequence.fromUnits(units).getEncodedString());
+        return new Word(Sequence.fromUnits(units).toEncodedString());
     }
 
     static fromSequence(sequence: Sequence): Word {
-        return new Word(sequence.getEncodedString());
+        return new Word(sequence.toEncodedString());
     }
 
     // string functions
     equals(other: Word): boolean {
-        return this.getEncodedString() === other.getEncodedString();
+        return this.toEncodedString() === other.toEncodedString();
     }
 
     compare(other: Word): number {
-        if (this.getEncodedString() < other.getEncodedString()) {
+        if (this.toEncodedString() < other.toEncodedString()) {
             return -1;
-        } else if (this.getEncodedString() > other.getEncodedString()) {
+        } else if (this.toEncodedString() > other.toEncodedString()) {
             return 1;
         } else {
             return 0;
@@ -183,52 +191,52 @@ export class Word extends Sequence {
     }
 
     startsWith(prefix: Word): boolean {
-        return this.getEncodedString().startsWith(prefix.getEncodedString());
+        return this.toEncodedString().startsWith(prefix.toEncodedString());
     }
 
     endsWith(suffix: Word): boolean {
-        return this.getEncodedString().endsWith(suffix.getEncodedString());
+        return this.toEncodedString().endsWith(suffix.toEncodedString());
     }
 
     contains(substring: Word): boolean {
-        return this.getEncodedString().includes(substring.getEncodedString());
+        return this.toEncodedString().includes(substring.toEncodedString());
     }
 
     indexOf(substring: Word): number {
-        return this.getEncodedString().indexOf(substring.getEncodedString());
+        return this.toEncodedString().indexOf(substring.toEncodedString());
     }
 
     lastIndexOf(substring: Word): number {
-        return this.getEncodedString().lastIndexOf(substring.getEncodedString());
+        return this.toEncodedString().lastIndexOf(substring.toEncodedString());
     }
 
     slice(start: number, end: number): Word {
-        return new Word(this.getEncodedString().slice(start, end));
+        return new Word(this.toEncodedString().slice(start, end));
     }
     substring(start: number, end: number): Word {
         return this.slice(start, end);
     }
     replace(oldSubstring: Word, newSubstring: Word): Word {
-        return new Word(this.getEncodedString().replace(oldSubstring.getEncodedString(), newSubstring.getEncodedString()));
+        return new Word(this.toEncodedString().replace(oldSubstring.toEncodedString(), newSubstring.toEncodedString()));
     }
     replaceAll(oldSubstring: Word, newSubstring: Word): Word {
-        return new Word(this.getEncodedString().replaceAll(oldSubstring.getEncodedString(), newSubstring.getEncodedString()));
+        return new Word(this.toEncodedString().replaceAll(oldSubstring.toEncodedString(), newSubstring.toEncodedString()));
     }
     split(separator?: Word): Word[] | Unit[] {
         if (separator) {
-            return this.getEncodedString().split(separator.getEncodedString()).map((s) => new Word(s));
+            return this.toEncodedString().split(separator.toEncodedString()).map((s) => new Word(s));
         } else {
-            return this.getEncodedString().split('').map((s) => new Unit(s));
+            return this.toEncodedString().split('').map((s) => new Unit(s));
         }
     }
     editDistance(other: Word, customEditDistance: (word1: Word, word2: Word) => number): number {
         return customEditDistance(this, other);
     }
- }
+}
 
 export class Unit {
     private unit: Units;
-    static readonly baseChar = 49;
+    static readonly baseChar = 48;
     constructor(value: string | number) {
         // ToDo: allow for Units as well
         if (typeof value === 'number') {
@@ -237,7 +245,7 @@ export class Unit {
             this.unit = Unit.encodedStringToUnits(value);
         }
         else {
-            throw new Error('Invalid Unit type');            
+            throw new Error('Invalid Unit type');
         }
     }
     toNumber(): number {
@@ -245,39 +253,45 @@ export class Unit {
     }
     toEncodedString(): string {
         return Unit.unitsToEncodedString(this.unit);
-    } 
+    }
     get(): Units {
         return this.unit;
     }
 
     static numberToEncodedString(n: number): string {
-        try {
-            return String.fromCharCode(Unit.baseChar + n);
-        } catch (error) {
+        if (!Unit.validateNumber(n)) {
             throw new Error(`Invalid number for encoding: ${n}`);
         }
+        return String.fromCharCode(Unit.baseChar + n);
+
     }
 
     static encodedStringToNumber(s: string): number {
-        try {
-            return s.charCodeAt(0) - Unit.baseChar;
-        } catch (error) {
-            throw new Error(`Invalid encoded string for decoding: ${s}`);
+        const n = s.charCodeAt(0) - Unit.baseChar;
+        if (!Unit.validateNumber(n)) {
+            throw new Error(`Invalid encoded string for number conversion: ${s}`);
         }
+        return n;
     }
-
+    // ToDo: instead of harcording with _, use [index - 1]
     static unitsToNumber(unit: Units): number {
-        return +((Units[unit]).replace('_', ''));
+        const n = +((Units[unit]).replace('_', ''));
+        if (!Unit.validateNumber(n)) {
+            throw new Error(`Invalid unit for number conversion: ${unit}`);
+        }
+        return n;
     }
     static unitsToEncodedString(unit: Units): string {
-        return Unit.numberToEncodedString(Unit.unitsToNumber(unit));
+        try { return Unit.numberToEncodedString(Unit.unitsToNumber(unit)); }
+        catch (error) {
+            throw new Error(`Invalid unit for encoded string conversion: ${unit}`);
+        }
     }
     static numberToUnits(n: number): Units {
-        try {
-            return Units[`_${n}`];
-        } catch (error) {
+        if (!Unit.validateNumber(n)) {
             throw new Error(`Invalid number for Units conversion: ${n}`);
         }
+        return Units[`_${n}`];
     }
     static encodedStringToUnits(s: string): Units {
         try {
@@ -285,6 +299,10 @@ export class Unit {
         } catch (error) {
             throw new Error(`Invalid encoded string for Units conversion: ${s}`);
         }
+    }
+
+    private static validateNumber(n: number): boolean {
+        return n >= 1 && n <= 64;
     }
 }
 
