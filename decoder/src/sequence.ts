@@ -275,11 +275,15 @@ export class Unit {
     }
     // ToDo: instead of harcording with _, use [index - 1]
     static unitsToNumber(unit: Units): number {
+        try {
         const n = +((Units[unit]).replace('_', ''));
         if (!Unit.validateNumber(n)) {
             throw new Error(`Invalid unit for number conversion: ${unit}`);
         }
         return n;
+    } catch (error) {
+        throw new Error(`Invalid unit for number conversion: ${unit}`);
+    }
     }
     static unitsToEncodedString(unit: Units): string {
         try { return Unit.numberToEncodedString(Unit.unitsToNumber(unit)); }

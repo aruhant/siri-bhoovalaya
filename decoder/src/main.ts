@@ -1,18 +1,19 @@
 import { Chakra } from "./chakra.js";
-import { Sequence2D,  Unit,  Word } from "./sequence.js";
+import { Sequence2D,  Unit,  Units,  Word } from "./sequence.js";
 import { Logger } from "./utils/logger.js";
 import { 
   BandhaFile} from "./bandha.js";
 
 // const program = require('commander');
 import { Command } from 'commander';
-import { devanagari_script, kannada_script } from "./script.js";
+import { BrahmiLikeScript, devanagari_script, kannada_script } from "./script.js";
 import * as fs from 'fs';
 import * as path from 'path';
 import { Encoding, SequenceFile, WordFile } from "./file_processor.js";
-import { BrahmiCustomEditDistance } from "./fuzzy_search.js";
-import { segmentStringWithEditDistanceCost } from "./word_break.js";
+import { BrahmiDistanceCalculator } from "./fuzzy_search.js";
+import { Segmenter } from "./word_break.js";
 import { BKTree } from "./BK_tree.js";
+import assert from "assert";
 
 
 
@@ -121,7 +122,13 @@ if (mismatches.length > 0) {
 
 //const lexiconWords: Word[] = WordFile.readList(options.dictionary, Encoding.script, kannada_script).sort(()=>Math.random()-0.5);
 //const dictionary = new BKTree(new CustomEditDistance(), lexiconWords);
-const dictionary = BKTree.fromFile(options.dictionary, new BrahmiCustomEditDistance());
+
+
+
+
+
+/*
+const dictionary = BKTree.fromFile(options.dictionary, new BrahmiDistanceCalculator());
 let chakra = new Chakra(new Sequence2D(SequenceFile.readLine(options.chakra, Encoding.numerical)));
 let bandha = BandhaFile.readPairSeperatedBandha(options.bandha);
 //Logger.info(bandha.toString());
@@ -131,9 +138,15 @@ let result = bandha.apply(chakra);
 //console.log(devanagari_script);
 dictionary.printTree();
 
-const segmentationResult = segmentStringWithEditDistanceCost(result, dictionary);
+const kannadaSegmenter = new Segmenter(dictionary);
+const segmentationResult = kannadaSegmenter.segment(result);
 
 console.log("Segmentation Result:", segmentationResult.map(word => script.wordToScript(word)).join(" "));
+*/
+
+
+
+
 
 
 // for dictionary.options, tell me how many words are of each length
@@ -160,3 +173,16 @@ if (options.dictionary) {
   }
 }
   */
+
+
+console.log(devanagari_script.unitsToScript(Units._28))
+console.log(devanagari_script.sciptToUnits("क्"));
+assert(BrahmiLikeScript.isSameVowelGroup(devanagari_script.sciptToUnits("अ"), devanagari_script.sciptToUnits("आ")));
+assert(BrahmiLikeScript.isSameVowelGroup(devanagari_script.sciptToUnits("इ"), devanagari_script.sciptToUnits("ई")));
+assert(!BrahmiLikeScript.isSameVowelGroup(devanagari_script.sciptToUnits("उ"), devanagari_script.sciptToUnits("इ")));
+assert(!BrahmiLikeScript.isSameVowelGroup(devanagari_script.sciptToUnits("ऋ"), devanagari_script.sciptToUnits("क्")));
+assert(BrahmiLikeScript.isSameVowelGroup(devanagari_script.sciptToUnits("औौौ"), devanagari_script.sciptToUnits("औ")));
+assert(BrahmiLikeScript.isSameVowelGroup(devanagari_script.sciptToUnits("औौौ"), devanagari_script.sciptToUnits("ओ")));
+
+assert(BrahmiLikeScript.isConsonantBlock(devanagari_script.sciptToUnits("क")));
+console.log(BrahmiLikeScript.getAllVowelGroups().map(group => group.map(unit => devanagari_script.unitsToScript(unit)).join(" ")).join("\n"));

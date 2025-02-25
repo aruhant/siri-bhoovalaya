@@ -1,5 +1,5 @@
 import { Word } from "./sequence.js";
-import { DistanceCalculator, BrahmiCustomEditDistance } from "./fuzzy_search.js";
+import { DistanceCalculator, BrahmiDistanceCalculator } from "./fuzzy_search.js";
 import { Dictionary } from "./dictionary.js";
 import { Logger } from "./utils/logger.js";
 import { Encoding } from "./file_processor.js";
@@ -30,12 +30,8 @@ class BKTreeNode {
     toJsonObject(): any {
         const children = {};
         for (const distance in this.children) {
-            if (this.children.hasOwnProperty(distance)) {
-                children[distance] = this.children[distance].toJsonObject();
-            }
-            else {
-                throw new Error('Error in toJsonObject')
-            }
+            children[distance] = this.children[distance].toJsonObject();
+
         }
         return {
             word: this.word.toEncodedString(),
@@ -45,12 +41,8 @@ class BKTreeNode {
     static fromJsonObject(json: any): BKTreeNode {
         const node = new BKTreeNode(new Word(json.word));
         for (const distance in json.children) {
-            if (json.children.hasOwnProperty(distance)) {
-                node.children[distance] = BKTreeNode.fromJsonObject(json.children[distance]);
-            }
-            else {
-                throw new Error('Error in fromJsonObject')
-            }
+            node.children[distance] = BKTreeNode.fromJsonObject(json.children[distance]);
+
         }
         return node;
     }
@@ -148,17 +140,12 @@ export class BKTree implements Dictionary {
 
             const children = node.getChildren();
             for (const edgeDistance in children) {
-                if (children.hasOwnProperty(edgeDistance)) {
-                    const numEdgeDistance = parseInt(edgeDistance, 10);
+                const numEdgeDistance = parseFloat(edgeDistance);
                     if (numEdgeDistance >= minDistance && numEdgeDistance <= maxDistance) {
                         const childNode = children[numEdgeDistance];
                         const childDist = this.distanceCalculator.getDistance(childNode.word, word);
                         stack.push({ node: childNode, dist: childDist });
                     }
-                }
-                else {
-                    throw new Error('Error in partial_match')
-                }
             }
         }
 
@@ -179,12 +166,8 @@ export class BKTree implements Dictionary {
             console.log(`${' '.repeat(depth * 2)}${node.word.toEncodedString()} - ${parent_distance}`);
             const children = node.getChildren();
             for (const distance in children) {
-                if (children.hasOwnProperty(distance)) {
-                    printNode(children[distance], depth + 1, distance);
-                }
-                else {
-                    throw new Error('Error in printTree')
-                }
+                printNode(children[distance], depth + 1, distance);
+
             }
         };
 
@@ -247,12 +230,8 @@ export class BKTree implements Dictionary {
             branchStats[Object.keys(children).length] = (branchStats[Object.keys(children).length] || 0) + 1;
             stats.maxBranching = Math.max(stats.maxBranching, Object.keys(children).length);
             for (const distance in children) {
-                if (children.hasOwnProperty(distance)) {
-                    traverse(children[distance], depth + 1);
-                }
-                else {
-                    throw new Error('Error in getStats')
-                }
+                traverse(children[distance], depth + 1);
+
             }
         };
         if (this.root) {

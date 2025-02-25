@@ -61,7 +61,12 @@ export class BrahmiLikeScript implements Script {
     scriptToSequence(script: string[]): Sequence {
         let units: Unit[] = [];
         script.forEach((character) => {
-            units.push(new Unit(Unit.unitsToNumber(this.sciptToUnits(character))));
+            const unit = this.sciptToUnits(character);
+            if (unit === undefined && !this.ignoreCharacters.includes(character)) {
+                Logger.warn(`Invalid character: ${character}`);
+            } else {
+                units.push(new Unit(Unit.unitsToNumber(unit)));
+            }
         });
         return Sequence.fromUnits(units);
     }
@@ -94,9 +99,13 @@ export class BrahmiLikeScript implements Script {
         });
         return script;
     }
-
-    sciptToUnits(script: string): Units {
-        return this.allBlockToUnits.get(script);
+    /**
+     * 
+     * @param script 
+     * @returns A member of the Units enum if the script is a valid block, undefined otherwise
+     */
+    sciptToUnits(script: string): Units | undefined {
+        return this.allBlockToUnits.get(script.replaceAll(this.halant, ""));
     }
 
     scriptToWord(script: string): Word {
@@ -160,6 +169,21 @@ export class BrahmiLikeScript implements Script {
         const numeral = Unit.unitsToNumber(unit);
         return (numeral == 14 || numeral == 15);
     }
+    static isSameVowelGroup(unit1: Units, unit2: Units): boolean {
+        if (!BrahmiLikeScript.isVowelBlock(unit1) || !BrahmiLikeScript.isVowelBlock(unit2)) {
+            return false;
+        }
+        // define functions isAgroup, isIgroup, isUgroup etc that takes a unit and returns a boolean
+        const isAgroup = (unit: Units) => Unit.unitsToNumber(unit) >= 1 && Unit.unitsToNumber(unit) <= 3;
+        const isIgroup = (unit: Units) => Unit.unitsToNumber(unit) >= 4 && Unit.unitsToNumber(unit) <= 6;
+        const isUgroup = (unit: Units) => Unit.unitsToNumber(unit) >= 7 && Unit.unitsToNumber(unit) <= 9;
+        const isRgroup = (unit: Units) => Unit.unitsToNumber(unit) >= 10 && Unit.unitsToNumber(unit) <= 12;
+        const isEgroup = (unit: Units) => Unit.unitsToNumber(unit) >= 16 && Unit.unitsToNumber(unit) <= 21;
+        const isOgroup = (unit: Units) => Unit.unitsToNumber(unit) >= 22 && Unit.unitsToNumber(unit) <= 27;
+        return (isAgroup(unit1) && isAgroup(unit2)) || (isIgroup(unit1) && isIgroup(unit2)) || (isUgroup(unit1) && isUgroup(unit2)) || (isRgroup(unit1) && isRgroup(unit2)) || (isEgroup(unit1) && isEgroup(unit2)) || (isOgroup(unit1) && isOgroup(unit2));
+
+    }
+
     
     // static functions getConsontantBlock, getVowelBlock, getSpecialBlock, getLuBlock that returns Units[]
     static getConsonantBlock(): Units[] {
@@ -174,6 +198,22 @@ export class BrahmiLikeScript implements Script {
     static getLuBlock(): Units[] {
         return Object.values(Units).filter((unit): unit is Units => typeof unit !== 'string' && BrahmiLikeScript.isLu(unit));
     }
+    static getSameVowelGroup(unit: Units): Units[] {
+        return BrahmiLikeScript.getVowelBlock().filter((unit2) => BrahmiLikeScript.isSameVowelGroup(unit, unit2));
+    }
+    static getAllVowelGroups(): Units[][] {
+        const seen = new Set<Units>();
+        return BrahmiLikeScript.getVowelBlock().reduce((groups, unit) => {
+            if (!seen.has(unit)) {
+            const group = BrahmiLikeScript.getSameVowelGroup(unit);
+            group.forEach(u => seen.add(u));
+            groups.push(group);
+            }
+            return groups;
+        }, [] as Units[][]);
+    }
+
+
     getName(): string {
         return this.name;
     }

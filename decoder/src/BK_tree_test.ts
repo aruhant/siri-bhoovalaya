@@ -1,7 +1,7 @@
 import { start } from "repl";
 import { BKTree } from "./BK_tree.js";
 import { Encoding, WordFile } from "./file_processor.js";
-import { BrahmiCustomEditDistance } from "./fuzzy_search.js";
+import { BrahmiDistanceCalculator } from "./fuzzy_search.js";
 import { devanagari_script, kannada_script } from "./script.js";
 import { Word } from "./sequence.js";
 import { Logger } from "./utils/logger.js";
@@ -11,7 +11,7 @@ function matchTest() {
 
     // Add words to the tree
     const words = ["book", "co", "bot", "books", "cake", "boo", "cape", "cart", "boon", "cook", "bone"].map((word) => new Word(word.toUpperCase()));
-    const bkTree = new BKTree(new BrahmiCustomEditDistance(), words);
+    const bkTree = new BKTree(new BrahmiDistanceCalculator(), words);
     //bkTree.printTree();
     // Perform a partial match search
     const searchWord = new Word("BOO");
@@ -24,7 +24,7 @@ function matchTest() {
 
     // Another example with a different set of words
     const newWords = ["apple", "apply", "apples", "ape", "apex", "maple", "ample", "bppl", "abpl", "ppl", "app", "appl"].map((word) => new Word(word.toUpperCase()));
-    const bkTreeNew = new BKTree(new BrahmiCustomEditDistance(), newWords);
+    const bkTreeNew = new BKTree(new BrahmiDistanceCalculator(), newWords);
 
     const searchWordNew = new Word("APPL");
     const maxDistanceNew = 1;
@@ -37,7 +37,7 @@ function matchTest() {
     // More examples with standard edit distance
 
     const moreWords = ["hello", "help", "hel", "helmetS", "hero", "heron", "hill"].map((word) => new Word(word.toUpperCase()));
-    const bkTreeMore = new BKTree(new BrahmiCustomEditDistance(), moreWords);
+    const bkTreeMore = new BKTree(new BrahmiDistanceCalculator(), moreWords);
 
 
     const searchWordMore = new Word("HEL");
@@ -52,18 +52,18 @@ function matchTest() {
 
 function seriaizeTest() {
     const words = ["book", "co", "bot", "books", "cake", "boo", "cape", "cart", "boon", "cook", "bone"].map((word) => new Word(word.toUpperCase()));
-    const bkTree = new BKTree(new BrahmiCustomEditDistance(), words);
+    const bkTree = new BKTree(new BrahmiDistanceCalculator(), words);
     const json = bkTree.toJsonObject();
     console.log(json);
-    const bkTreeNew = BKTree.fromJsonObject(json, new BrahmiCustomEditDistance());
+    const bkTreeNew = BKTree.fromJsonObject(json, new BrahmiDistanceCalculator());
     console.log(bkTreeNew);
 }
 
 function fileTest(inputFile: string = "./data/modified_dictionary_out.txt", saveFile: string = "bk_tree.json", encoding: Encoding = Encoding.script, script = kannada_script) {
     const words = WordFile.readList(inputFile, encoding, script);
-    const bkTree = new BKTree(new BrahmiCustomEditDistance(), words.sort(() => Math.random() - 0.5));
+    const bkTree = new BKTree(new BrahmiDistanceCalculator(), words.sort(() => Math.random() - 0.5));
     bkTree.toFile(saveFile);
-    const bkTreeNew = BKTree.fromFile(saveFile, new BrahmiCustomEditDistance());
+    const bkTreeNew = BKTree.fromFile(saveFile, new BrahmiDistanceCalculator());
     console.log(bkTreeNew);
     const stats = bkTreeNew.getStats();
     Logger.debugObject(stats);
@@ -114,22 +114,26 @@ function findBestTree(inital?: string | Word[], saveFile: string = "bk_tree_best
     let bestTree: BKTree;
     let words: Word[];
     if (Array.isArray(inital) && inital.every(item => item instanceof Word)) {
-        bestTree = new BKTree(new BrahmiCustomEditDistance(), inital);
+        bestTree = new BKTree(new BrahmiDistanceCalculator(), inital);
         words = inital;
     }
     else if (typeof inital === "string") {
-        bestTree = BKTree.fromFile(inital, new BrahmiCustomEditDistance());
+        bestTree = BKTree.fromFile(inital, new BrahmiDistanceCalculator());
         words = bestTree.gettAllWords();
     }
     else {
-        bestTree = BKTree.fromFile(saveFile, new BrahmiCustomEditDistance());
+        bestTree = BKTree.fromFile(saveFile, new BrahmiDistanceCalculator());
         words = bestTree.gettAllWords();
+    }
+    if (words.length === 0) {
+        Logger.error("No words found");
+        return;
     }
 
     let bestSpeed = treeSpeed(bestTree);
     Logger.info(`Starting with best tree with speed ${bestSpeed}ms`);
     for (let i = 1; i < 1000; i++) {
-        const current_tree = new BKTree(new BrahmiCustomEditDistance(), words.sort(() => Math.random() - 0.5));
+        const current_tree = new BKTree(new BrahmiDistanceCalculator(), words.sort(() => Math.random() - 0.5));
         const current_speed = treeSpeed(current_tree);
         if (current_speed < bestSpeed) {
             Logger.info(`New tree is faster with speed ${current_speed}ms than previous best ${bestSpeed}ms`);
@@ -173,8 +177,8 @@ for (let i = 0; i < 120; i++) {
         maxDistance.push(6);
     }
 }
-Logger.debugObject(randomWords);
-Logger.debugObject(maxDistance);
+//Logger.debugObject(randomWords);
+//Logger.debugObject(maxDistance);
 
 
 function treeSpeed(tree: BKTree): number {
@@ -188,4 +192,4 @@ function treeSpeed(tree: BKTree): number {
 
 }
 //Logger.debugObject(BKTree.fromFile("bk_tree_best.json", new CustomEditDistance()).getStats());
-//findBestTree();
+findBestTree()

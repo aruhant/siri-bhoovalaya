@@ -1,3 +1,4 @@
+import assert from "assert";
 import {Sequence2D, Unit } from "./sequence.js";
 
 export class Chakra {
@@ -34,6 +35,8 @@ export class Chakra {
     */
 
     getUnit(i: number, j: number): Unit {
+        assert(i >= 0 && i < this.size, `Invalid row index ${i}`);
+        assert(j >= 0 && j < this.size, `Invalid column index ${j}`);
         return this.chakra.unitAt(i, j);
     }
 
