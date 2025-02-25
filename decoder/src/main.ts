@@ -10,7 +10,7 @@ import { devanagari_script, kannada_script } from "./script.js";
 import * as fs from 'fs';
 import * as path from 'path';
 import { Encoding, SequenceFile, WordFile } from "./file_processor.js";
-import { CustomEditDistance } from "./fuzzy_search.js";
+import { BrahmiCustomEditDistance } from "./fuzzy_search.js";
 import { segmentStringWithEditDistanceCost } from "./word_break.js";
 import { BKTree } from "./BK_tree.js";
 
@@ -64,7 +64,7 @@ Logger.info(result.toString());
 */
 
 
-let script = devanagari_script;
+let script = kannada_script;
 /*
 let word = Word.fromNumbers([43,1,  13, 3, 30, 13, 4, 62,40, 54,3])
 Logger.info(script.wordToScript(word));
@@ -119,8 +119,9 @@ if (mismatches.length > 0) {
 
 // Read lexicon words from file
 
-const lexiconWords: Word[] = WordFile.readList(options.dictionary, Encoding.script, kannada_script).sort(()=>Math.random()-0.5);
-const dictionary = new BKTree(new CustomEditDistance(), lexiconWords);
+//const lexiconWords: Word[] = WordFile.readList(options.dictionary, Encoding.script, kannada_script).sort(()=>Math.random()-0.5);
+//const dictionary = new BKTree(new CustomEditDistance(), lexiconWords);
+const dictionary = BKTree.fromFile(options.dictionary, new BrahmiCustomEditDistance());
 let chakra = new Chakra(new Sequence2D(SequenceFile.readLine(options.chakra, Encoding.numerical)));
 let bandha = BandhaFile.readPairSeperatedBandha(options.bandha);
 //Logger.info(bandha.toString());
@@ -132,4 +133,30 @@ dictionary.printTree();
 
 const segmentationResult = segmentStringWithEditDistanceCost(result, dictionary);
 
-console.log("Segmentation Result:", segmentationResult.map(word => devanagari_script.wordToScript(word)).join(" "));
+console.log("Segmentation Result:", segmentationResult.map(word => script.wordToScript(word)).join(" "));
+
+
+// for dictionary.options, tell me how many words are of each length
+/*
+if (options.dictionary) {
+  // group words by length
+  const words = WordFile.readList(options.dictionary, Encoding.script, script);
+  const wordsByLength: { [key: number]: Word[] } = {};
+  words.forEach(word => {
+    const length = word.length();
+    if (!wordsByLength[length]) {
+      wordsByLength[length] = [];
+    }
+    wordsByLength[length].push(word);
+  }
+  );
+  // print how many words are of each length
+  Logger.infoBr("Words by length:");
+  Object.keys(wordsByLength).forEach(length => {
+    Logger.info(`${length}: ${wordsByLength[length].length}`);
+  });
+  if (wordsByLength[0][0].toEncodedString() === ''){
+    Logger.info("Empty word found");
+  }
+}
+  */

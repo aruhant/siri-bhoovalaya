@@ -75,7 +75,7 @@ export class Logger {
   };
 
   static progress(x: string) {
-    process.stdout.write(trackerColor(` ${x}                                                           `  +  clc.move.left(1000)));
+    process.stdout.write(trackerColor(` ${x} ` + clc.erase.lineRight + '\r'));
   };
 
   static clear() {

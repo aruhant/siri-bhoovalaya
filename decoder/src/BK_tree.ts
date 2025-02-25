@@ -1,9 +1,10 @@
 import { Word } from "./sequence.js";
-import { DistanceCalculator, CustomEditDistance } from "./fuzzy_search.js";
+import { DistanceCalculator, BrahmiCustomEditDistance } from "./fuzzy_search.js";
 import { Dictionary } from "./dictionary.js";
 import { Logger } from "./utils/logger.js";
 import { Encoding } from "./file_processor.js";
 import { Script } from "./script.js";
+import fs, { stat } from 'fs';
 
 class BKTreeNode {
     word: Word;
@@ -26,17 +27,46 @@ class BKTreeNode {
     getChildren(): { [distance: number]: BKTreeNode } {
         return this.children;
     }
+    toJsonObject(): any {
+        const children = {};
+        for (const distance in this.children) {
+            if (this.children.hasOwnProperty(distance)) {
+                children[distance] = this.children[distance].toJsonObject();
+            }
+            else {
+                throw new Error('Error in toJsonObject')
+            }
+        }
+        return {
+            word: this.word.toEncodedString(),
+            children
+        };
+    }
+    static fromJsonObject(json: any): BKTreeNode {
+        const node = new BKTreeNode(new Word(json.word));
+        for (const distance in json.children) {
+            if (json.children.hasOwnProperty(distance)) {
+                node.children[distance] = BKTreeNode.fromJsonObject(json.children[distance]);
+            }
+            else {
+                throw new Error('Error in fromJsonObject')
+            }
+        }
+        return node;
+    }
 }
 
 export class BKTree implements Dictionary {
     private root: BKTreeNode | null = null;
+    private smallWords: Set<Word> = new Set();
     private distanceCalculator: DistanceCalculator;
     private size: number = 0;
     private longest: number = 0;
+    private static readonly small_word_length: number = 3;
 
     constructor(distanceCalculator: DistanceCalculator, words: Word[] = []) {
         this.distanceCalculator = distanceCalculator;
-         for (const word of words) {
+        for (const word of words) {
             this.add(word);
             Logger.progress(`Building BK-tree: ${Math.floor(100 * this.size / words.length)}%`);
         }
@@ -52,6 +82,9 @@ export class BKTree implements Dictionary {
         this.size++;
         if (word.length() > this.longest) {
             this.longest = word.length();
+        }
+        if (word.length() <= BKTree.small_word_length) {
+            this.smallWords.add(word);
         }
         if (!this.root) {
             this.root = new BKTreeNode(word);
@@ -87,6 +120,9 @@ export class BKTree implements Dictionary {
     }
 
     partial_match(word: Word, threshold: number): { word: Word, distance: number }[] {
+        if (word.length() <= BKTree.small_word_length && this.smallWords.has(word)) {
+            return [{ word, distance: 0 }];
+        }
         const results: { word: Word, distance: number }[] = [];
         const stack: { node: BKTreeNode; dist: number }[] = [];
 
@@ -100,11 +136,12 @@ export class BKTree implements Dictionary {
         //Logger.debugObject({  stack });
         //console.log(stack.length);
         while (stack.length > 0) {
-            const { node, dist } = stack.pop(); 
+            const { node, dist } = stack.pop();
 
             if (dist <= threshold) {
                 results.push({ word: node.word, distance: dist });
             }
+
 
             const minDistance = Math.max(0, dist - threshold);
             const maxDistance = dist + threshold;
@@ -127,7 +164,7 @@ export class BKTree implements Dictionary {
 
         return results;
     }
-    closest_match(word: Word, maxEditDistance: number): { word: Word, distance: number }{
+    closest_match(word: Word, maxEditDistance: number): { word: Word, distance: number } {
         const results = this.partial_match(word, maxEditDistance);
         return results.reduce((best, result) => result.distance < best.distance ? result : best, results[0]) || null;
     }
@@ -157,4 +194,72 @@ export class BKTree implements Dictionary {
     gettAllWords(): Word[] {
         return this.partial_match(new Word(""), this.longest).map((match) => match.word);
     }
+
+
+    toJsonObject() {
+        if (!this.root) {
+            return null;
+        }
+        return {
+            nodes: this.root.toJsonObject(),
+            size: this.size,
+            longest: this.longest
+        };
+    }
+    static fromJsonObject(json: any, distanceCalculator: DistanceCalculator): BKTree {
+        const tree = new BKTree(distanceCalculator, []);
+        tree.root = BKTreeNode.fromJsonObject(json.nodes);
+        tree.size = json.size;
+        tree.longest = json.longest;
+        tree.smallWords = new Set(tree.gettAllWords().filter(word => word.length() <= BKTree.small_word_length));
+        return tree;
+    }
+
+    static fromFile(file: string, distanceCalculator: DistanceCalculator): BKTree {
+        const json = JSON.parse(fs.readFileSync(file, 'utf8'));
+        return BKTree.fromJsonObject(json, distanceCalculator);
+    }
+
+    toFile(file: string): void {
+        fs.writeFileSync(file, JSON.stringify(this.toJsonObject()), 'utf8');
+    }
+
+    getStats(): { stats: { nodes: number, height: number, branching: number, maxBranching: number }, branchStats: { [branching: number]: number } } {
+        const branchStats = {
+        }; // map of branching factor to number of nodes with that branching factor 
+
+
+        const stats = {
+            nodes: 0,
+            leaves: 0,
+            height: 0,
+            branching: 0,
+            maxBranching: 0
+        };
+        // Traverse the tree to get the number of nodes, depth, average branching factor,
+        // and  the maximum branching factor
+        const traverse = (node: BKTreeNode, depth: number): void => {
+            stats.nodes++;
+            stats.height = Math.max(stats.height, depth);
+            const children = node.getChildren();
+            stats.leaves += Object.keys(children).length === 0 ? 1 : 0;
+            stats.branching += Object.keys(children).length;
+            branchStats[Object.keys(children).length] = (branchStats[Object.keys(children).length] || 0) + 1;
+            stats.maxBranching = Math.max(stats.maxBranching, Object.keys(children).length);
+            for (const distance in children) {
+                if (children.hasOwnProperty(distance)) {
+                    traverse(children[distance], depth + 1);
+                }
+                else {
+                    throw new Error('Error in getStats')
+                }
+            }
+        };
+        if (this.root) {
+            traverse(this.root, 0);
+        }
+        stats.branching /= (stats.nodes - stats.leaves);
+        return { stats, branchStats };
+    }
+
 }
