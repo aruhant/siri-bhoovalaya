@@ -1,4 +1,4 @@
-# The Siri Bhoovalaya Project
+# The Siri Bhoovalaya Project: Decrypting Siri Bhoovalaya 
 
 Siri Bhoovalaya is a unique ancient Jain manuscript composed entirely in a numerical script. These numbers correspond to syllables across 718 languages, integrating knowledge from multiple sciences and cultural texts. The Siri Bhoovalaya Project aims to develop a comprehensive automated decoding system with simulations, while spreading awareness through our YouTube course:  
 [YouTube Channel: Siri Bhoovalaya](https://www.youtube.com/@siri-bhoovalaya)
