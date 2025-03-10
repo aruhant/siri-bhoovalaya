@@ -1,7 +1,15 @@
 # The Siri Bhoovalaya Project: Decrypting Siri Bhoovalaya 
 
+
+
+
+
 Siri Bhoovalaya is a unique ancient Jain manuscript composed entirely in a numerical script. These numbers correspond to syllables across 718 languages, integrating knowledge from multiple sciences and cultural texts. The Siri Bhoovalaya Project aims to develop a comprehensive automated decoding system with simulations, while spreading awareness through our YouTube course:  
 [YouTube Channel: Siri Bhoovalaya](https://www.youtube.com/@siri-bhoovalaya)
+
+Example: First Chakra Decoded
+
+> ಅಷ್ಟಮಹಾಪ್ರಾತಿಹಾರ್ಯ ವಯ್ಭವದಿನ್ದ ಅಷ್ಟಗುಣನ್ಗಳೋಳೋಮ್ದಮ್ ಸ್ರ್ಷ್ಟಿಗೆ ಮನ್ಗಳ ಪರ್ಯಾಯದಿನಿತ ಅಷ್ಟ ಮಜಿ ನಗೆರಗು ವೆನುಟಣೆಯ ಕೋಲು ಪುಸ್ತಕ ಪಿನ್ಛ ಪಾತ್ರೆಯ ಅವ ತ್ರದಾ ಕಮನ್ಡಲ ದನವ ಕಾರ ಮನ್ತ್ರ ಸಿದಿಗೆ ಕಾರಣ ವೆನ್ದು ಭುವಲಯದೊಳುಪೇಳ್ದ ಮಹಿಮಾ ಟವಣೆಯೊಳಕ್ಷರ ದನ್ ಕವ ಸ್ಥಾಪಿಸಿದ ವಯವ ವದೆ ಮ್ಹಾವ್ರ್ತಉ ಅವರವರಿಗೆ ತಕ ಶಕ್ತಿ ಗೆ ವರ್ ವಾದನ ವಮನ್ ಗಲದ ಭುವಲಯ ವಿಹವಾಣಿ ಓಮ್ಕಾರ ದತಿಶಯ ವಿಹ ನಿನ ಮಹಾವೀರ ವಾಣಿ ಎನ್ದೆ ನುವ ಮಹಿಮೆಯ ಮ್ನ್ಗಲ ಪ್ರಾ ಭ್ರು ತವೆ ನು ವಮ ಹಸಿ ಧ ಕಾವ್ಯ ಭೂವಲಯ ಹಕಉ ದ್ವಿ ಸಮ್ಯೋಗದೊಳಗೆ ಇಪ ತೆನ್ಟು ಪ್ರಕಟ ದೊಳ ರವ ತಮ್ ಕುಡೆ ಸಕಲಾ ನ್ಕದೋಳ್ ಬಿಟ ಸೊನೆಯೆ ಎನ್ ಟೆನ್ಟು ಸಕ ಲಾಗ ಮಏಳು ಭನ್ಗಕಮಲಗಳೇಳು ಮುನ್ ದಕೆ ಪೋಗು ತಿರ್ದಾಗ ಕ್ರಮದೊಳಗೆರಡು ಕಾಲ್ ನೂರು ತಮಲಾನ್ಕ ಅಇದು ಸೊನೆ ಯುಆರು ಎರ್ಡಯ್ದು ಕಮಲದ ಗನ್ಧ ಭೂವಲಯಮ್ಮಹ್ ರುದಯದೊಳಾ ಕಮಲಗಳ್ಚ ಲಿಪಾ ಗವಿ ಮಲಾನ್ಕ ಗೆಲುವನ್ ದವ ದು ಸಮ ವನು ಬೆಸದೊಳುಭಾಗಿಸೆ ಸೊನೆಯ ಕ್ರಮ ವಿಹ ಕಾವ್ಯ್ ಭೂವ್ಲಯ ಸಿರಿ ಭೂವ್ಲಯ ಸಿಧಾನ್ತದ ಮ್ನ್ಗಲ್ ಪಾ ಹುಢ್ವು
 
 ---
 
@@ -26,7 +34,7 @@ We are in the process of providing cleaned versions of the initial Chakras from 
 
 ---
 
-## Decoding Multiple Languages (Coming Soon)
+## Decoding Multiple Languages (Available)
 - From the resultant Kannada text, specific predefined patterns allow extraction of other languages, including Prakrit, Sanskrit, Tamil, Telugu, and more.  
 - **Current Work**: Algorithm implementation for multilingual decoding.  
 - **Next Steps**: Simulations to demonstrate these processes (Planned).
