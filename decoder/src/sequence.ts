@@ -72,6 +72,9 @@ export class Sequence {
     append(unit: Unit) {
         this.sequence += unit.toEncodedString();
     }
+    join(sequence: Sequence) {
+        this.sequence += sequence.toEncodedString();
+    }
 
     constructor(encodedString: string) {
         this.sequence = encodedString.split('').map(s => new Unit(s)).map(u => u.toEncodedString()).join('');

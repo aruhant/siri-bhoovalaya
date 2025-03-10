@@ -108,9 +108,15 @@ function findBestTree(inital?: string | Word[], saveFile: string = "bk_tree_best
     Logger.info(`Best tree saved to bk_tree_best.json with branching stats ${bestStats}`);
 }
 */
-// this is like the above function but instead uses treeSpeed to compare two trees
-function findBestTree(inital?: string | Word[], saveFile: string = "bk_tree_best.json") {
-    // correct implementation
+
+
+export class FindBestTree {
+randomWords: Word[] = [];
+maxDistance: number[] = [];
+constructor() {
+    this.generateTestData();
+}
+findBestTree(inital?: string | Word[], saveFile: string = "bk_tree_best.json") {
     let bestTree: BKTree;
     let words: Word[];
     if (Array.isArray(inital) && inital.every(item => item instanceof Word)) {
@@ -130,16 +136,17 @@ function findBestTree(inital?: string | Word[], saveFile: string = "bk_tree_best
         return;
     }
 
-    let bestSpeed = treeSpeed(bestTree);
+    let bestSpeed = this.treeSpeed(bestTree);
     Logger.info(`Starting with best tree with speed ${bestSpeed}ms`);
+    bestTree.toFile(saveFile);
     for (let i = 1; i < 1000; i++) {
         const current_tree = new BKTree(new BrahmiDistanceCalculator(), words.sort(() => Math.random() - 0.5));
-        const current_speed = treeSpeed(current_tree);
+        const current_speed = this.treeSpeed(current_tree);
         if (current_speed < bestSpeed) {
             Logger.info(`New tree is faster with speed ${current_speed}ms than previous best ${bestSpeed}ms`);
             bestSpeed = current_speed;
             bestTree = current_tree;
-            bestTree.toFile("bk_tree_best.json");
+            bestTree.toFile(saveFile);
         }
         Logger.info(`Iteration ${i}, speed ${current_speed}ms`);
         const stats = current_tree.getStats();
@@ -150,8 +157,8 @@ function findBestTree(inital?: string | Word[], saveFile: string = "bk_tree_best
     Logger.info(`Best tree saved to bk_tree_best.json with speed ${bestSpeed}ms`);
 }
 
-const randomWords: Word[] = [];
-const maxDistance: number[] = [];
+
+generateTestData(){
 for (let i = 0; i < 120; i++) {
     // we will 3 words each ranging from length 1 to 40
     const currentWordLength = Math.floor(i / 3) + 1;
@@ -159,37 +166,40 @@ for (let i = 0; i < 120; i++) {
     for (let j = 0; j < currentWordLength; j++) {
         word.push(Math.floor(Math.random() * 64) + 1);
     }
-    randomWords.push(Word.fromNumbers(word));
+    this.randomWords.push(Word.fromNumbers(word));
     if (currentWordLength < 3) {
-        maxDistance.push(1);
+        this.maxDistance.push(1);
     }
     else if (currentWordLength < 6) {
-        maxDistance.push(2);
+        this.maxDistance.push(2);
     } else if (currentWordLength < 10) {
-        maxDistance.push(3);
+        this.maxDistance.push(3);
     } else if (currentWordLength < 20) {
-        maxDistance.push(4);
+        this.maxDistance.push(4);
     }
     else if (currentWordLength < 30) {
-        maxDistance.push(5);
+        this.maxDistance.push(5);
     }
     else {
-        maxDistance.push(6);
+        this.maxDistance.push(6);
     }
+}
 }
 //Logger.debugObject(randomWords);
 //Logger.debugObject(maxDistance);
 
-
-function treeSpeed(tree: BKTree): number {
+treeSpeed(tree: BKTree): number {
 
     const start = Date.now();
     for (let i = 0; i < 120; i++) {
-        tree.partial_match(randomWords[i], maxDistance[i]);
+        // indicate progress percentage
+        Logger.progress(`Testing word ${i + 1}/120`);
+        tree.partial_match(this.randomWords[i], this.maxDistance[i]);
     }
     const end =  Date.now() - start;
     return end;
 
 }
+}
 //Logger.debugObject(BKTree.fromFile("bk_tree_best.json", new CustomEditDistance()).getStats());
-findBestTree()
+//findBestTree()

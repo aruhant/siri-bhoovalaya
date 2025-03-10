@@ -47,6 +47,7 @@ class BKTreeNode {
         return node;
     }
 }
+//ಅಷ್ಟಮಹಾಪ್ರಾತಿಹಾರ್ಯ ವಯ್ ಭವ ದ್ ಇನ್ ದ
 
 export class BKTree implements Dictionary {
     private root: BKTreeNode | null = null;
@@ -151,7 +152,7 @@ export class BKTree implements Dictionary {
 
         return results;
     }
-    closest_match(word: Word, maxEditDistance: number): { word: Word, distance: number } {
+    closest_match(word: Word, maxEditDistance: number): { word: Word, distance: number } | null {
         const results = this.partial_match(word, maxEditDistance);
         return results.reduce((best, result) => result.distance < best.distance ? result : best, results[0]) || null;
     }

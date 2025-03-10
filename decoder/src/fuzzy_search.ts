@@ -14,7 +14,7 @@ export class BrahmiDistanceCalculator implements DistanceCalculator {
   DEFAULT_DELETE_COST: number;
   DEFAULT_REPLACE_COST: number;
 
-  constructor(insert_map?: Map<Units, number>, delete_map?: Map<Units, number>, replace_map?: Map<Units, Map<Units, number>>, DEFAULT_INSERT_COST: number = 1, DEFAULT_DELETE_COST: number = 1, DEFAULT_REPLACE_COST: number = 1.2) {
+  constructor(insert_map?: Map<Units, number>, delete_map?: Map<Units, number>, replace_map?: Map<Units, Map<Units, number>>, DEFAULT_INSERT_COST: number = 1, DEFAULT_DELETE_COST: number = 1, DEFAULT_REPLACE_COST: number = 1.4) {
     this.insert_map = insert_map ?? this.generateInsertMap();
     this.delete_map = delete_map ?? this.generateDeleteMap();
     this.replace_map = replace_map ?? this.generateReplaceMap();
@@ -126,15 +126,20 @@ export class BrahmiDistanceCalculator implements DistanceCalculator {
   generateReplaceMap(): Map<Units, Map<Units, number>> {
     const script = devanagari_script; // this is the script chosen for convenient representation. this method can still be used for a word for any script
     const SAME_GROUP_VOWEL_COST = 0.2;
-    const DIFF_GROUP_VOWEL_COST = 0.5;
-    const CONSONANT_COST = 0.9;
+    const DIFF_GROUP_VOWEL_COST = 0.6;
+    const CONSONANT_COST = 1;
     // these will be initialized directly in the map. they are commutative
-    const LU_L_COST = 0.1
+    const LU_L_COST = 0.2
     const LOO_L_COST = 0.1
     const LU_LOO_COST = 0.1
-    const L_L_COST = 0.1
+    const L_L_COST = 0.2
     const AH_H_COST = 0.2
     const AM_N_COST = 0.2
+    const AM_M_COST = 0.2
+    const N_N_COST = 0.6
+    const SH_SH_S_COST = 0.6
+    const R_RI_COST = 0.6
+    const Y_EI_COST = 0.6
     const replaceMap = new Map<Units, Map<Units, number>>();
     // Add custom replace costs here
     const consonants = BrahmiLikeScript.getConsonantBlock();
@@ -162,16 +167,65 @@ export class BrahmiDistanceCalculator implements DistanceCalculator {
     });
     replaceMap.set(script.sciptToUnits("ल्"), replaceMap.get(script.sciptToUnits("ल्"))?.set(script.sciptToUnits("ळ्"), L_L_COST));
     replaceMap.set(script.sciptToUnits("ळ्"), replaceMap.get(script.sciptToUnits("ळ्"))?.set(script.sciptToUnits("ल्"), L_L_COST));
+
     replaceMap.set(script.sciptToUnits("ळु"), new Map<Units, number>([[script.sciptToUnits("ळू"), LU_LOO_COST], [script.sciptToUnits("ळ्"), LU_L_COST]]));
     replaceMap.set(script.sciptToUnits("ळू"), new Map<Units, number>([[script.sciptToUnits("ळु"), LU_LOO_COST], [script.sciptToUnits("ळ्"), LOO_L_COST]]));
     replaceMap.set(script.sciptToUnits("ळ्"), replaceMap.get(script.sciptToUnits("ळ्"))?.set(script.sciptToUnits("ळु"), LU_L_COST));
     replaceMap.set(script.sciptToUnits("ळ्"), replaceMap.get(script.sciptToUnits("ळ्"))?.set(script.sciptToUnits("ळू"), LOO_L_COST));
+
     replaceMap.set(script.sciptToUnits("ह्"), replaceMap.get(script.sciptToUnits("ह्"))?.set(script.sciptToUnits("ः"), AH_H_COST));
     replaceMap.set(script.sciptToUnits("ः"), new Map<Units, number>([[script.sciptToUnits("ह्"), AH_H_COST]]));
+
+
     replaceMap.set(script.sciptToUnits("न्"), replaceMap.get(script.sciptToUnits("न्"))?.set(script.sciptToUnits("ं"), AM_N_COST));
-    replaceMap.set(script.sciptToUnits("ं"), new Map<Units, number>([[script.sciptToUnits("न्"), AM_N_COST]]));
+    replaceMap.set(script.sciptToUnits("न्"), replaceMap.get(script.sciptToUnits("न्"))?.set(script.sciptToUnits("ङ्"), N_N_COST));
+    replaceMap.set(script.sciptToUnits("न्"), replaceMap.get(script.sciptToUnits("न्"))?.set(script.sciptToUnits("ण्"), N_N_COST));
 
+    replaceMap.set(script.sciptToUnits("ं"), new Map<Units, number>([[script.sciptToUnits("न्"), AM_N_COST], [script.sciptToUnits("ङ्"), N_N_COST], [script.sciptToUnits("ण्"), N_N_COST], [script.sciptToUnits("म्"), AM_M_COST]]));
 
+    replaceMap.set(script.sciptToUnits("म्"), replaceMap.get(script.sciptToUnits("म्"))?.set(script.sciptToUnits("ं"), AM_M_COST));
+
+    replaceMap.set(script.sciptToUnits("ङ्"), replaceMap.get(script.sciptToUnits("ङ्"))?.set(script.sciptToUnits("न्"), N_N_COST));
+    replaceMap.set(script.sciptToUnits("ङ्"), replaceMap.get(script.sciptToUnits("ङ्"))?.set(script.sciptToUnits("ं"), N_N_COST));
+    replaceMap.set(script.sciptToUnits("ङ्"), replaceMap.get(script.sciptToUnits("ङ्"))?.set(script.sciptToUnits("ण्"), N_N_COST));
+  
+    replaceMap.set(script.sciptToUnits("ण्"), replaceMap.get(script.sciptToUnits("ण्"))?.set(script.sciptToUnits("न्"), N_N_COST));
+    replaceMap.set(script.sciptToUnits("ण्"), replaceMap.get(script.sciptToUnits("ण्"))?.set(script.sciptToUnits("ं"), N_N_COST));
+    replaceMap.set(script.sciptToUnits("ण्"), replaceMap.get(script.sciptToUnits("ण्"))?.set(script.sciptToUnits("ङ्"), N_N_COST));
+    // next श् and ष् AND स्
+    replaceMap.set(script.sciptToUnits("श्"), replaceMap.get(script.sciptToUnits("श्"))?.set(script.sciptToUnits("ष्"), SH_SH_S_COST));
+    replaceMap.set(script.sciptToUnits("श्"), replaceMap.get(script.sciptToUnits("श्"))?.set(script.sciptToUnits("स्"), SH_SH_S_COST));
+
+    replaceMap.set(script.sciptToUnits("ष्"), replaceMap.get(script.sciptToUnits("ष्"))?.set(script.sciptToUnits("श्"), SH_SH_S_COST));
+    replaceMap.set(script.sciptToUnits("ष्"), replaceMap.get(script.sciptToUnits("ष्"))?.set(script.sciptToUnits("स्"), SH_SH_S_COST));
+
+    replaceMap.set(script.sciptToUnits("स्"), replaceMap.get(script.sciptToUnits("स्"))?.set(script.sciptToUnits("ष्"), SH_SH_S_COST));
+    replaceMap.set(script.sciptToUnits("स्"), replaceMap.get(script.sciptToUnits("स्"))?.set(script.sciptToUnits("श्"), SH_SH_S_COST));
+
+    // next र् , "ऋ" , "ॠ" "ॠॄ", 
+    replaceMap.set(script.sciptToUnits("र्"), replaceMap.get(script.sciptToUnits("र्"))?.set(script.sciptToUnits("ऋ"), R_RI_COST));
+    replaceMap.set(script.sciptToUnits("र्"), replaceMap.get(script.sciptToUnits("र्"))?.set(script.sciptToUnits("ॠ"), R_RI_COST));
+    replaceMap.set(script.sciptToUnits("र्"), replaceMap.get(script.sciptToUnits("र्"))?.set(script.sciptToUnits("ॠॄ"), R_RI_COST));
+
+    replaceMap.set(script.sciptToUnits("ऋ"), replaceMap.get(script.sciptToUnits("ऋ"))?.set(script.sciptToUnits("र्"), R_RI_COST));
+    replaceMap.set(script.sciptToUnits("ऋ"), replaceMap.get(script.sciptToUnits("ऋ"))?.set(script.sciptToUnits("ॠ"), R_RI_COST));
+    replaceMap.set(script.sciptToUnits("ऋ"), replaceMap.get(script.sciptToUnits("ऋ"))?.set(script.sciptToUnits("ॠॄ"), R_RI_COST));
+
+    replaceMap.set(script.sciptToUnits("ॠ"), replaceMap.get(script.sciptToUnits("ॠ"))?.set(script.sciptToUnits("र्"), R_RI_COST));
+    replaceMap.set(script.sciptToUnits("ॠ"), replaceMap.get(script.sciptToUnits("ॠ"))?.set(script.sciptToUnits("ऋ"), R_RI_COST));
+    replaceMap.set(script.sciptToUnits("ॠ"), replaceMap.get(script.sciptToUnits("ॠ"))?.set(script.sciptToUnits("ॠॄ"), R_RI_COST));
+
+    replaceMap.set(script.sciptToUnits("ॠॄ"), replaceMap.get(script.sciptToUnits("ॠॄ"))?.set(script.sciptToUnits("र्"), R_RI_COST));
+    replaceMap.set(script.sciptToUnits("ॠॄ"), replaceMap.get(script.sciptToUnits("ॠॄ"))?.set(script.sciptToUnits("ऋ"), R_RI_COST));
+    replaceMap.set(script.sciptToUnits("ॠॄ"), replaceMap.get(script.sciptToUnits("ॠॄ"))?.set(script.sciptToUnits("ॠ"), R_RI_COST));
+
+    replaceMap.set(script.sciptToUnits("य्"), replaceMap.get(script.sciptToUnits("य्"))?.set(script.sciptToUnits("ऐ"), Y_EI_COST));
+    replaceMap.set(script.sciptToUnits("य्"), replaceMap.get(script.sciptToUnits("य्"))?.set(script.sciptToUnits("ऐो"), Y_EI_COST));
+    replaceMap.set(script.sciptToUnits("य्"), replaceMap.get(script.sciptToUnits("य्"))?.set(script.sciptToUnits("ऐोो"), Y_EI_COST));
+    replaceMap.set(script.sciptToUnits("ऐ"), replaceMap.get(script.sciptToUnits("ऐ"))?.set(script.sciptToUnits("य्"), Y_EI_COST));
+    replaceMap.set(script.sciptToUnits("ऐो"), replaceMap.get(script.sciptToUnits("ऐो"))?.set(script.sciptToUnits("य्"), Y_EI_COST));
+    replaceMap.set(script.sciptToUnits("ऐोो"), replaceMap.get(script.sciptToUnits("ऐोो"))?.set(script.sciptToUnits("य्"), Y_EI_COST));
+    
     /*
     for (const [initial, replacementMap] of replaceMap.entries()) {
       const initialScript = script.unitsToScript(initial);

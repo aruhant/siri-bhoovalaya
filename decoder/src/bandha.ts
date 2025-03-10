@@ -1,21 +1,33 @@
+import { assert } from 'console';
 import { Chakra } from './chakra.js';
 import { Sequence, Transposed } from './sequence.js';
 import fs from 'fs';
+import { Logger } from './utils/logger.js';
 export class Bandha {
-    private bandha: {i:number,j:number}[];
+    private bandha: { i: number, j: number }[];
     private size: number;
 
-    constructor( bandha: {i:number,j:number}[]
-
-    ) {
-        // ToDo: validate bandha
+    constructor(bandha: { i: number, j: number }[]) {
         this.bandha = bandha;
         this.size = Math.sqrt(bandha.length);
+        if (this.size % 1 !== 0) {
+            Logger.warn(`Bandha size ${this.size} is not a perfect square`);
+        }
+        for (const { i, j } of bandha) {
+            if (i < 0 || i >= this.size || j < 0 || j >= this.size) {
+                Logger.warn(`Bandha has unconvential indices: ${i}, ${j}`);
+            }
+        }
     }
 
     apply(chakra: Chakra): Transposed {
-        const result:Transposed = new Sequence('');
-        this.bandha.forEach( (unit) => {
+        if (chakra.getSize() - this.size != 0) {
+            Logger.info(this.size.toString());
+            Logger.info(chakra.getSize().toString());
+            Logger.warn(`Bandha size ${this.size} does not match chakra size ${chakra.getSize()}`);
+        }
+        const result: Transposed = new Sequence('');
+        this.bandha.forEach((unit) => {
             result.append(chakra.getUnit(unit.i, unit.j));
         });
         return result;
@@ -24,30 +36,56 @@ export class Bandha {
     // method to convert this form of bandha (sequence of i,j pairs) to a 2D array of numbers
     to2DArray1base(): number[][] {
         let result: number[][] = Array.from({ length: this.size }, () => Array(this.size).fill(0));
-        //Logger.debugObject(this.bandha);
-        //Logger.debugObject(result);
         this.bandha.forEach((element, index) => {
-            result[element.i][element.j] = index +1;
+            result[element.i][element.j] = index + 1;
         });
         return result;
     }
 
-    toString() {
+    toStringAs2DArray() {
         let as2DArray = this.to2DArray1base();
         let result = '';
         as2DArray.forEach(row => {
             row.forEach(value => {
-            result += `${value}`.padStart((this.size*this.size+1).toString().length) 
+                result += `${value}`.padStart((this.size * this.size + 1).toString().length)
             });
             result += '\n';
         });
         return result;
     }
-
-    get(){
-        return this.bandha;
+    toString(delimiter: string = '\n'): string {
+        return this.bandha.map(({ i, j }) => `${i},${j}`).join(delimiter);
     }
 
+    get() {
+        return this.bandha;
+    }
+    static fromKoshtakChintamani(size: number, up: number, right: number) {
+        const bandha: { i: number, j: number }[] = [];
+        let row = 0;
+        let col = (size - 1) / 2;
+        for (let i = 0; i < size * size; i++) {
+            bandha.push({ i: row, j: col });
+            row = ((row - up) % size + size) % size;
+            col = ((col + right) % size + size) % size;
+            // if the cell is already filled, move one row down
+            if (bandha.find(unit => unit.i === row && unit.j === col)) {
+                row = ((row + 2 * up) % size + size) % size;
+                col = ((col - right) % size + size) % size;
+            }
+        }
+        return new Bandha(bandha);
+    }
+    /*
+    static fromSubChakraBandha(subChakraBandha: Bandha, order: number[]): Bandha {
+        const bandha: { i: number, j: number }[] = [];
+       order.forEach((index) => {
+            // add elements of the subChakraBandha 
+        });
+        return new Bandha(bandha);
+      
+}
+*/
 }
 
 
@@ -65,27 +103,7 @@ export class BandhaFile {
 
     static writePairSeperatedBandha(filename: string, bandha: Bandha
     ) {
-        const data = bandha.get().map(({ i, j }) => `${i},${j}`).join('\n');
-        fs.writeFileSync(filename, data);
+        fs.writeFileSync(filename, bandha.toString());
     }
 }
 
-export class BandhaGenerator{
-    static patternGenerator(size: number, up: number, right: number) {
-        const bandha: {i:number,j:number}[] = [];
-        let row = 0;
-        let col = (size - 1) / 2;
-        for (let i = 0; i < size * size; i++) {
-            bandha.push({i: row, j: col});
-            row = ((row - up) % size + size) % size;
-            col = ((col + right) % size + size) % size;
-            // if the cell is already filled, move one row down
-            if (bandha.find(unit => unit.i === row && unit.j === col)) {
-                row = ((row + 2*up) % size + size) % size;
-                col = ((col - right) % size + size) % size;
-            }
-        }
-        return new Bandha(bandha);        
-    }
-
-}

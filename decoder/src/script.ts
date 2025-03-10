@@ -51,6 +51,13 @@ export class BrahmiLikeScript implements Script {
     }
 
     sequenceToScript(sequence: Sequence): string[] {
+        if (sequence === undefined) {
+            throw new Error("Sequence is undefined");
+        }
+        if (sequence === null) {
+            Logger.warn("Sequence is null");
+            return [];
+        }
         let script: string[] = [];
         sequence.getUnits().forEach((unit) => {
             script.push(this.unitsToScript(unit.get()));
@@ -59,6 +66,13 @@ export class BrahmiLikeScript implements Script {
     }
 
     scriptToSequence(script: string[]): Sequence {
+        if (script === undefined) {
+            throw new Error("Script string list is undefined");
+        }
+        if (script === null) {
+            throw new Error("Script string list is null");
+        }
+
         let units: Unit[] = [];
         script.forEach((character) => {
             const unit = this.sciptToUnits(character);
@@ -72,6 +86,13 @@ export class BrahmiLikeScript implements Script {
     }
 
     wordToScript(word: Word): string {
+        if (word === undefined) {
+            throw new Error("Word is undefined");
+        }
+        if (word === null) {
+            Logger.warn("Word is null");
+            return "";
+        }
         let script = "";
         let can_use_matraa = false;
 
@@ -105,22 +126,39 @@ export class BrahmiLikeScript implements Script {
      * @returns A member of the Units enum if the script is a valid block, undefined otherwise
      */
     sciptToUnits(script: string): Units | undefined {
+        if (script === undefined) {
+            throw new Error("Script string is undefined");
+        }
+        if (script === null) {
+            Logger.warn("Script string is null");
+            return undefined;
+        }
         return this.allBlockToUnits.get(script.replaceAll(this.halant, ""));
     }
 
     scriptToWord(script: string): Word {
+        if (script === undefined) {
+            throw new Error("Script string is undefined");
+        }
+        if (script === null) {
+            throw new Error("Script string is null");
+        }
         let word = "";
         let split = script.split("");
+        //console.log(`split: ${split}`);
         let blocked: string[] = [];
         for (let lb = 0; lb < split.length; lb++) {
+            //console.log(`split[lb]) ${split[lb]}`);
             if (split[lb] == this.halant) {
+                //console.log("halant found");
                 blocked.push(this.halant);
                 continue;
             }
+            
             let found = false;
             for (let ub = Math.min(script.length, lb + this.max_length) - 1; ub >= lb; ub--) {
                 let block = split.slice(lb, ub + 1).join("");
-                if (this.sciptToUnits(block) !== undefined) {
+                if (!block.includes(this.halant) && this.sciptToUnits(block) !== undefined) {
                     blocked.push(block);
                     lb = ub;
                     found = true;
@@ -128,10 +166,11 @@ export class BrahmiLikeScript implements Script {
                 }
             }
             if (!found && !this.ignoreCharacters.includes(split[lb])) {
-                Logger.warn(`Invalid character: ${split[lb]}, hex: ${split[lb].charCodeAt(0).toString(16)}`);
+                //Logger.warn(`Invalid character: ${split[lb]}, hex: ${split[lb].charCodeAt(0).toString(16)}`);
 
             }
         }
+        //Logger.debugObject(`Blocked: ${blocked}`);
         blocked.forEach((block, index) => {
             if (block != this.halant) {
                 const blockIndex: number = Unit.unitsToNumber(this.sciptToUnits(block));
@@ -144,7 +183,7 @@ export class BrahmiLikeScript implements Script {
                 }}
                 catch(error){
                     Logger.error(`Error converting blocked: ${blocked}`);
-                    Logger.error(`Error converting block to unit: ${blocked[index + 1]}`);
+                    Logger.error(`Error converting this block to unit: ${blocked[index + 1]}`);
                 }
             }
         });
