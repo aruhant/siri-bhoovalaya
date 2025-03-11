@@ -1,9 +1,6 @@
 # The Siri Bhoovalaya Project: Decrypting Siri Bhoovalaya 
 
 
-
-
-
 Siri Bhoovalaya is a unique ancient Jain manuscript composed entirely in a numerical script. These numbers correspond to syllables across 718 languages, integrating knowledge from multiple sciences and cultural texts. The Siri Bhoovalaya Project aims to develop a comprehensive automated decoding system with simulations, while spreading awareness through our YouTube course:  
 [YouTube Channel: Siri Bhoovalaya](https://www.youtube.com/@siri-bhoovalaya)
 
@@ -23,14 +20,14 @@ We are in the process of providing cleaned versions of the initial Chakras from 
 ## Chakra Bandha and Navmank Bandha (Available)
 - These two Bandhas are sufficient to decode the entirety of the first volume (Khand).  
 - **Output**: Applying these Bandhas reveals Kannada text. Extracting additional languages requires further steps detailed below.  
-- **Implementation**: C++ algorithms.  
+- **Implementation**: C++, TS, and Python.  
 - **Try It**: Simulations to run these algorithms locally (planned).
 - Try any bandha of your creation on a chakra!
 
 ---
 ## Devnaagri Substitution Table (Available)
-- Support for characters present in this text but not in UNICODE
-- Kannada Substitution Table (available)
+- Support for characters present in this text but not in Unicode
+- Kannada, Brahmi, Devnagari, and IPA Substitution Table (available)
 
 ---
 
@@ -41,12 +38,11 @@ We are in the process of providing cleaned versions of the initial Chakras from 
 
 ---
 ## Cleaned Halegannada wordlist with 200,000 words (Available) 
-- Secondary clean-up and Polishing (coming soon)
 - Expanded comprehensive dictionary (coming soon)
 ---
 
 ## Partitioning a Sequence of Characters into Words (Available) 
-This is one of the more challenging aspects. Word lists for ancient languages or historical forms of modern languages are scarce. Additionally:  
+This is one of the more challenging aspects. Word lists for ancient languages or historical forms of modern languages are scarce. The following will improve accuracy:  
 - Collaboration with language experts may be necessary to leverage grammatical constructs for better optimization.  
 - Procuring literature from the era, especially digitized texts with selectable content, is ongoing to support this effort.
 ---
