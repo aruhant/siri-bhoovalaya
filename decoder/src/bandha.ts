@@ -100,6 +100,7 @@ export class BandhaFile {
         const bandha = fs.readFileSync(filename, 'utf8')
             .trim()
             .split('\n')
+            .filter(line => line.trim() != '' && line.length > 0 && !line.startsWith('#'))
             .map(line => {
                 const [i, j] = line.split(',').map(Number);
                 return { i, j };

@@ -16,7 +16,7 @@ export enum Encoding {
 
 export class SequenceFile {
     static readList(filename: string, encoding: Encoding = Encoding.encoded_string, script?: Script, inline_delimiter?: string, endline_delimeter = "\n"): Sequence[] {
-        let read: string[] = fs.readFileSync(filename, 'utf8').split(endline_delimeter).filter(line => line.trim() != '');
+        let read: string[] = fs.readFileSync(filename, 'utf8').split(endline_delimeter).filter(line => line.trim() != '' && line.length > 0 && !line.startsWith('#')); 
         switch (encoding) {
             case Encoding.numerical:
                 inline_delimiter = inline_delimiter ?? ',';
@@ -70,7 +70,7 @@ export class SequenceFile {
 
 export class WordFile {
     static readList(filename: string, encoding: Encoding = Encoding.encoded_string, script?: Script, inline_delimiter?: string, endline_delimeter = "\n"): Word[] {
-        let read: string[] = fs.readFileSync(filename, 'utf8').split(endline_delimeter).filter(line => (line.trim() !== '' && line.length > 0));
+        let read: string[] = fs.readFileSync(filename, 'utf8').split(endline_delimeter).filter(line => (line.trim() !== '' && line.length > 0) && !line.startsWith('#'));
         switch (encoding) {
             case Encoding.numerical:
                 inline_delimiter = inline_delimiter ?? ',';

@@ -1,6 +1,6 @@
 {
     "ignoreFile": ".ignorefile",
-    "license": "LICENSE",
+    "license": ".LICENSE",
     "licenseFormats": {
         "js": {
             "prepend": "/*",

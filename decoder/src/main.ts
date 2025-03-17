@@ -164,7 +164,7 @@ function wordToScriptTests() {
 
 function dictionaryTests() {
   const dictionaryContent = fs.readFileSync('./data/dictionary.txt', 'utf-8');
-  const words = dictionaryContent.split('\n').map(line => line.trim()).filter(line => line.length > 0);
+  const words = dictionaryContent.split('\n').map(line => line.trim()).filter(line => line.length > 0 && !line.startsWith('#'));
 
   const encodedWords = words.map(word => devanagari_script.scriptToWord(word));
   const decodedWords = encodedWords.map(word => devanagari_script.wordToScript(word));
@@ -348,9 +348,9 @@ function correctPartitionedWords() {
   //Logger.info(correctedWords.map(word => kannada_script.wordToScript(word)).join(" "));
 }
 
-//decryptingAndPartioningTests();
+decryptingAndPartioningTests();
 //reverseCheck();
-understandSangatya();
+//understandSangatya();
 // check function BrhamiLikeScript.isHasvVowel
 //partitionSequence();
 // Segmentation Result: ಅಷ್ಟಗುಣನ್ಗಳೋಳೋಮ್ ದಮ್
