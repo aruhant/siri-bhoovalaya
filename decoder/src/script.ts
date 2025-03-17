@@ -1,3 +1,9 @@
+/*
+Copyright (C) 2025 Aruhant Mehta
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 3.
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+*/
 import { Sequence, Unit, Units, Word } from "./sequence.js";
 import { Logger } from "./utils/logger.js";
 
@@ -8,7 +14,7 @@ export interface Script {
     scriptToSequence(script: string[]): Sequence;
     wordToScript(word: Word): string;
     scriptToWord(script: string): Word;
-    sciptToUnits(script: string): Units;
+    scriptToUnits(script: string): Units;
     unitsToScript(unit: Units): string;
     getName(): string;
 }
@@ -75,7 +81,7 @@ export class BrahmiLikeScript implements Script {
 
         let units: Unit[] = [];
         script.forEach((character) => {
-            const unit = this.sciptToUnits(character);
+            const unit = this.scriptToUnits(character);
             if (unit === undefined && !this.ignoreCharacters.includes(character)) {
                 Logger.warn(`Invalid character: ${character}`);
             } else {
@@ -125,7 +131,7 @@ export class BrahmiLikeScript implements Script {
      * @param script 
      * @returns A member of the Units enum if the script is a valid block, undefined otherwise
      */
-    sciptToUnits(script: string): Units | undefined {
+    scriptToUnits(script: string): Units | undefined {
         if (script === undefined) {
             throw new Error("Script string is undefined");
         }
@@ -158,7 +164,7 @@ export class BrahmiLikeScript implements Script {
             let found = false;
             for (let ub = Math.min(script.length, lb + this.max_length) - 1; ub >= lb; ub--) {
                 let block = split.slice(lb, ub + 1).join("");
-                if (!block.includes(this.halant) && this.sciptToUnits(block) !== undefined) {
+                if (!block.includes(this.halant) && this.scriptToUnits(block) !== undefined) {
                     blocked.push(block);
                     lb = ub;
                     found = true;
@@ -173,10 +179,10 @@ export class BrahmiLikeScript implements Script {
         //Logger.debugObject(`Blocked: ${blocked}`);
         blocked.forEach((block, index) => {
             if (block != this.halant) {
-                const blockIndex: number = Unit.unitsToNumber(this.sciptToUnits(block));
+                const blockIndex: number = Unit.unitsToNumber(this.scriptToUnits(block));
                 word += Unit.numberToEncodedString(blockIndex);
                 try{if (BrahmiLikeScript.isConsonantBlock(Unit.numberToUnits(blockIndex)) && (index == blocked.length - 1 ||
-                    ((blocked[index + 1] != this.halant) && !this.matraMap.get(blocked[index + 1]) && !BrahmiLikeScript.isSpecialBlock(this.sciptToUnits(blocked[index + 1])) 
+                    ((blocked[index + 1] != this.halant) && !this.matraMap.get(blocked[index + 1]) && !BrahmiLikeScript.isSpecialBlock(this.scriptToUnits(blocked[index + 1])) 
                         
                     ))) {
                     word += Unit.numberToEncodedString(1);
@@ -221,6 +227,19 @@ export class BrahmiLikeScript implements Script {
         const isOgroup = (unit: Units) => Unit.unitsToNumber(unit) >= 22 && Unit.unitsToNumber(unit) <= 27;
         return (isAgroup(unit1) && isAgroup(unit2)) || (isIgroup(unit1) && isIgroup(unit2)) || (isUgroup(unit1) && isUgroup(unit2)) || (isRgroup(unit1) && isRgroup(unit2)) || (isEgroup(unit1) && isEgroup(unit2)) || (isOgroup(unit1) && isOgroup(unit2));
 
+    }
+
+    static isShortVowel(unit: Units): boolean {
+        const numeral = Unit.unitsToNumber(unit);
+        return BrahmiLikeScript.isVowelBlock(unit) && numeral % 3 == 1;
+    }
+    static isMediumVowel(unit: Units): boolean {
+        const numeral = Unit.unitsToNumber(unit);
+        return BrahmiLikeScript.isVowelBlock(unit) && numeral % 3 == 2;
+    }
+    static isLongVowel(unit: Units): boolean {
+        const numeral = Unit.unitsToNumber(unit);
+        return BrahmiLikeScript.isVowelBlock(unit) && numeral % 3 == 0;
     }
 
     

@@ -1,0 +1,25 @@
+{
+    "ignoreFile": ".ignorefile",
+    "license": "LICENSE",
+    "licenseFormats": {
+        "js": {
+            "prepend": "/*",
+            "append": " */\n\n\n",
+            "eachLine": {
+                "prepend": " * "
+            }
+        },
+        "dotfile": {
+            "eachLine": {
+                "prepend": "# "
+            }
+        },
+        "txt": {
+            "eachLine": {
+                "prepend": "# "
+            }
+        }
+    },
+    "trailingWhitespace": "TRIM",
+    "regexIdentifier": "##"
+}

@@ -1,0 +1,9 @@
+.DS_Store
+*.map
+*.DS_Store
+*.mjs
+*.editorconfig
+*.gitignore
+*.prettierrc
+*.txt
+*.yml

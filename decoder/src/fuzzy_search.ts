@@ -1,3 +1,9 @@
+/*
+Copyright (C) 2025 Aruhant Mehta
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 3.
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+*/
 import { BrahmiLikeScript, devanagari_script } from "./script.js";
 import { Word, Unit, Units } from "./sequence.js";
 import { Logger } from "./utils/logger.js";
@@ -106,11 +112,11 @@ export class BrahmiDistanceCalculator implements DistanceCalculator {
     // Add custom insert costs here
     addCost(vowels, VOWEL_COST);
     addCost(consonants, CONSONANT_COST);
-    insertMap.set(script.sciptToUnits("अ"), A_COST);
-    insertMap.set(script.sciptToUnits("ं"), AM_COST);
-    insertMap.set(script.sciptToUnits("ः"), SPECIAL_COST);
-    insertMap.set(script.sciptToUnits("..."), SPECIAL_COST);
-    insertMap.set(script.sciptToUnits("::"), SPECIAL_COST);
+    insertMap.set(script.scriptToUnits("अ"), A_COST);
+    insertMap.set(script.scriptToUnits("ं"), AM_COST);
+    insertMap.set(script.scriptToUnits("ः"), SPECIAL_COST);
+    insertMap.set(script.scriptToUnits("..."), SPECIAL_COST);
+    insertMap.set(script.scriptToUnits("::"), SPECIAL_COST);
     /*
     for (const [key, value] of insertMap.entries()) {
       Logger.debugObject(`Key: ${script.unitsToScript(key)}, Value: ${value}`);
@@ -165,66 +171,66 @@ export class BrahmiDistanceCalculator implements DistanceCalculator {
       });
       replaceMap.set(vowel, replaceCosts);
     });
-    replaceMap.set(script.sciptToUnits("ल्"), replaceMap.get(script.sciptToUnits("ल्"))?.set(script.sciptToUnits("ळ्"), L_L_COST));
-    replaceMap.set(script.sciptToUnits("ळ्"), replaceMap.get(script.sciptToUnits("ळ्"))?.set(script.sciptToUnits("ल्"), L_L_COST));
+    replaceMap.set(script.scriptToUnits("ल्"), replaceMap.get(script.scriptToUnits("ल्"))?.set(script.scriptToUnits("ळ्"), L_L_COST));
+    replaceMap.set(script.scriptToUnits("ळ्"), replaceMap.get(script.scriptToUnits("ळ्"))?.set(script.scriptToUnits("ल्"), L_L_COST));
 
-    replaceMap.set(script.sciptToUnits("ळु"), new Map<Units, number>([[script.sciptToUnits("ळू"), LU_LOO_COST], [script.sciptToUnits("ळ्"), LU_L_COST]]));
-    replaceMap.set(script.sciptToUnits("ळू"), new Map<Units, number>([[script.sciptToUnits("ळु"), LU_LOO_COST], [script.sciptToUnits("ळ्"), LOO_L_COST]]));
-    replaceMap.set(script.sciptToUnits("ळ्"), replaceMap.get(script.sciptToUnits("ळ्"))?.set(script.sciptToUnits("ळु"), LU_L_COST));
-    replaceMap.set(script.sciptToUnits("ळ्"), replaceMap.get(script.sciptToUnits("ळ्"))?.set(script.sciptToUnits("ळू"), LOO_L_COST));
+    replaceMap.set(script.scriptToUnits("ळु"), new Map<Units, number>([[script.scriptToUnits("ळू"), LU_LOO_COST], [script.scriptToUnits("ळ्"), LU_L_COST]]));
+    replaceMap.set(script.scriptToUnits("ळू"), new Map<Units, number>([[script.scriptToUnits("ळु"), LU_LOO_COST], [script.scriptToUnits("ळ्"), LOO_L_COST]]));
+    replaceMap.set(script.scriptToUnits("ळ्"), replaceMap.get(script.scriptToUnits("ळ्"))?.set(script.scriptToUnits("ळु"), LU_L_COST));
+    replaceMap.set(script.scriptToUnits("ळ्"), replaceMap.get(script.scriptToUnits("ळ्"))?.set(script.scriptToUnits("ळू"), LOO_L_COST));
 
-    replaceMap.set(script.sciptToUnits("ह्"), replaceMap.get(script.sciptToUnits("ह्"))?.set(script.sciptToUnits("ः"), AH_H_COST));
-    replaceMap.set(script.sciptToUnits("ः"), new Map<Units, number>([[script.sciptToUnits("ह्"), AH_H_COST]]));
+    replaceMap.set(script.scriptToUnits("ह्"), replaceMap.get(script.scriptToUnits("ह्"))?.set(script.scriptToUnits("ः"), AH_H_COST));
+    replaceMap.set(script.scriptToUnits("ः"), new Map<Units, number>([[script.scriptToUnits("ह्"), AH_H_COST]]));
 
 
-    replaceMap.set(script.sciptToUnits("न्"), replaceMap.get(script.sciptToUnits("न्"))?.set(script.sciptToUnits("ं"), AM_N_COST));
-    replaceMap.set(script.sciptToUnits("न्"), replaceMap.get(script.sciptToUnits("न्"))?.set(script.sciptToUnits("ङ्"), N_N_COST));
-    replaceMap.set(script.sciptToUnits("न्"), replaceMap.get(script.sciptToUnits("न्"))?.set(script.sciptToUnits("ण्"), N_N_COST));
+    replaceMap.set(script.scriptToUnits("न्"), replaceMap.get(script.scriptToUnits("न्"))?.set(script.scriptToUnits("ं"), AM_N_COST));
+    replaceMap.set(script.scriptToUnits("न्"), replaceMap.get(script.scriptToUnits("न्"))?.set(script.scriptToUnits("ङ्"), N_N_COST));
+    replaceMap.set(script.scriptToUnits("न्"), replaceMap.get(script.scriptToUnits("न्"))?.set(script.scriptToUnits("ण्"), N_N_COST));
 
-    replaceMap.set(script.sciptToUnits("ं"), new Map<Units, number>([[script.sciptToUnits("न्"), AM_N_COST], [script.sciptToUnits("ङ्"), N_N_COST], [script.sciptToUnits("ण्"), N_N_COST], [script.sciptToUnits("म्"), AM_M_COST]]));
+    replaceMap.set(script.scriptToUnits("ं"), new Map<Units, number>([[script.scriptToUnits("न्"), AM_N_COST], [script.scriptToUnits("ङ्"), N_N_COST], [script.scriptToUnits("ण्"), N_N_COST], [script.scriptToUnits("म्"), AM_M_COST]]));
 
-    replaceMap.set(script.sciptToUnits("म्"), replaceMap.get(script.sciptToUnits("म्"))?.set(script.sciptToUnits("ं"), AM_M_COST));
+    replaceMap.set(script.scriptToUnits("म्"), replaceMap.get(script.scriptToUnits("म्"))?.set(script.scriptToUnits("ं"), AM_M_COST));
 
-    replaceMap.set(script.sciptToUnits("ङ्"), replaceMap.get(script.sciptToUnits("ङ्"))?.set(script.sciptToUnits("न्"), N_N_COST));
-    replaceMap.set(script.sciptToUnits("ङ्"), replaceMap.get(script.sciptToUnits("ङ्"))?.set(script.sciptToUnits("ं"), N_N_COST));
-    replaceMap.set(script.sciptToUnits("ङ्"), replaceMap.get(script.sciptToUnits("ङ्"))?.set(script.sciptToUnits("ण्"), N_N_COST));
+    replaceMap.set(script.scriptToUnits("ङ्"), replaceMap.get(script.scriptToUnits("ङ्"))?.set(script.scriptToUnits("न्"), N_N_COST));
+    replaceMap.set(script.scriptToUnits("ङ्"), replaceMap.get(script.scriptToUnits("ङ्"))?.set(script.scriptToUnits("ं"), N_N_COST));
+    replaceMap.set(script.scriptToUnits("ङ्"), replaceMap.get(script.scriptToUnits("ङ्"))?.set(script.scriptToUnits("ण्"), N_N_COST));
   
-    replaceMap.set(script.sciptToUnits("ण्"), replaceMap.get(script.sciptToUnits("ण्"))?.set(script.sciptToUnits("न्"), N_N_COST));
-    replaceMap.set(script.sciptToUnits("ण्"), replaceMap.get(script.sciptToUnits("ण्"))?.set(script.sciptToUnits("ं"), N_N_COST));
-    replaceMap.set(script.sciptToUnits("ण्"), replaceMap.get(script.sciptToUnits("ण्"))?.set(script.sciptToUnits("ङ्"), N_N_COST));
+    replaceMap.set(script.scriptToUnits("ण्"), replaceMap.get(script.scriptToUnits("ण्"))?.set(script.scriptToUnits("न्"), N_N_COST));
+    replaceMap.set(script.scriptToUnits("ण्"), replaceMap.get(script.scriptToUnits("ण्"))?.set(script.scriptToUnits("ं"), N_N_COST));
+    replaceMap.set(script.scriptToUnits("ण्"), replaceMap.get(script.scriptToUnits("ण्"))?.set(script.scriptToUnits("ङ्"), N_N_COST));
     // next श् and ष् AND स्
-    replaceMap.set(script.sciptToUnits("श्"), replaceMap.get(script.sciptToUnits("श्"))?.set(script.sciptToUnits("ष्"), SH_SH_S_COST));
-    replaceMap.set(script.sciptToUnits("श्"), replaceMap.get(script.sciptToUnits("श्"))?.set(script.sciptToUnits("स्"), SH_SH_S_COST));
+    replaceMap.set(script.scriptToUnits("श्"), replaceMap.get(script.scriptToUnits("श्"))?.set(script.scriptToUnits("ष्"), SH_SH_S_COST));
+    replaceMap.set(script.scriptToUnits("श्"), replaceMap.get(script.scriptToUnits("श्"))?.set(script.scriptToUnits("स्"), SH_SH_S_COST));
 
-    replaceMap.set(script.sciptToUnits("ष्"), replaceMap.get(script.sciptToUnits("ष्"))?.set(script.sciptToUnits("श्"), SH_SH_S_COST));
-    replaceMap.set(script.sciptToUnits("ष्"), replaceMap.get(script.sciptToUnits("ष्"))?.set(script.sciptToUnits("स्"), SH_SH_S_COST));
+    replaceMap.set(script.scriptToUnits("ष्"), replaceMap.get(script.scriptToUnits("ष्"))?.set(script.scriptToUnits("श्"), SH_SH_S_COST));
+    replaceMap.set(script.scriptToUnits("ष्"), replaceMap.get(script.scriptToUnits("ष्"))?.set(script.scriptToUnits("स्"), SH_SH_S_COST));
 
-    replaceMap.set(script.sciptToUnits("स्"), replaceMap.get(script.sciptToUnits("स्"))?.set(script.sciptToUnits("ष्"), SH_SH_S_COST));
-    replaceMap.set(script.sciptToUnits("स्"), replaceMap.get(script.sciptToUnits("स्"))?.set(script.sciptToUnits("श्"), SH_SH_S_COST));
+    replaceMap.set(script.scriptToUnits("स्"), replaceMap.get(script.scriptToUnits("स्"))?.set(script.scriptToUnits("ष्"), SH_SH_S_COST));
+    replaceMap.set(script.scriptToUnits("स्"), replaceMap.get(script.scriptToUnits("स्"))?.set(script.scriptToUnits("श्"), SH_SH_S_COST));
 
     // next र् , "ऋ" , "ॠ" "ॠॄ", 
-    replaceMap.set(script.sciptToUnits("र्"), replaceMap.get(script.sciptToUnits("र्"))?.set(script.sciptToUnits("ऋ"), R_RI_COST));
-    replaceMap.set(script.sciptToUnits("र्"), replaceMap.get(script.sciptToUnits("र्"))?.set(script.sciptToUnits("ॠ"), R_RI_COST));
-    replaceMap.set(script.sciptToUnits("र्"), replaceMap.get(script.sciptToUnits("र्"))?.set(script.sciptToUnits("ॠॄ"), R_RI_COST));
+    replaceMap.set(script.scriptToUnits("र्"), replaceMap.get(script.scriptToUnits("र्"))?.set(script.scriptToUnits("ऋ"), R_RI_COST));
+    replaceMap.set(script.scriptToUnits("र्"), replaceMap.get(script.scriptToUnits("र्"))?.set(script.scriptToUnits("ॠ"), R_RI_COST));
+    replaceMap.set(script.scriptToUnits("र्"), replaceMap.get(script.scriptToUnits("र्"))?.set(script.scriptToUnits("ॠॄ"), R_RI_COST));
 
-    replaceMap.set(script.sciptToUnits("ऋ"), replaceMap.get(script.sciptToUnits("ऋ"))?.set(script.sciptToUnits("र्"), R_RI_COST));
-    replaceMap.set(script.sciptToUnits("ऋ"), replaceMap.get(script.sciptToUnits("ऋ"))?.set(script.sciptToUnits("ॠ"), R_RI_COST));
-    replaceMap.set(script.sciptToUnits("ऋ"), replaceMap.get(script.sciptToUnits("ऋ"))?.set(script.sciptToUnits("ॠॄ"), R_RI_COST));
+    replaceMap.set(script.scriptToUnits("ऋ"), replaceMap.get(script.scriptToUnits("ऋ"))?.set(script.scriptToUnits("र्"), R_RI_COST));
+    replaceMap.set(script.scriptToUnits("ऋ"), replaceMap.get(script.scriptToUnits("ऋ"))?.set(script.scriptToUnits("ॠ"), R_RI_COST));
+    replaceMap.set(script.scriptToUnits("ऋ"), replaceMap.get(script.scriptToUnits("ऋ"))?.set(script.scriptToUnits("ॠॄ"), R_RI_COST));
 
-    replaceMap.set(script.sciptToUnits("ॠ"), replaceMap.get(script.sciptToUnits("ॠ"))?.set(script.sciptToUnits("र्"), R_RI_COST));
-    replaceMap.set(script.sciptToUnits("ॠ"), replaceMap.get(script.sciptToUnits("ॠ"))?.set(script.sciptToUnits("ऋ"), R_RI_COST));
-    replaceMap.set(script.sciptToUnits("ॠ"), replaceMap.get(script.sciptToUnits("ॠ"))?.set(script.sciptToUnits("ॠॄ"), R_RI_COST));
+    replaceMap.set(script.scriptToUnits("ॠ"), replaceMap.get(script.scriptToUnits("ॠ"))?.set(script.scriptToUnits("र्"), R_RI_COST));
+    replaceMap.set(script.scriptToUnits("ॠ"), replaceMap.get(script.scriptToUnits("ॠ"))?.set(script.scriptToUnits("ऋ"), R_RI_COST));
+    replaceMap.set(script.scriptToUnits("ॠ"), replaceMap.get(script.scriptToUnits("ॠ"))?.set(script.scriptToUnits("ॠॄ"), R_RI_COST));
 
-    replaceMap.set(script.sciptToUnits("ॠॄ"), replaceMap.get(script.sciptToUnits("ॠॄ"))?.set(script.sciptToUnits("र्"), R_RI_COST));
-    replaceMap.set(script.sciptToUnits("ॠॄ"), replaceMap.get(script.sciptToUnits("ॠॄ"))?.set(script.sciptToUnits("ऋ"), R_RI_COST));
-    replaceMap.set(script.sciptToUnits("ॠॄ"), replaceMap.get(script.sciptToUnits("ॠॄ"))?.set(script.sciptToUnits("ॠ"), R_RI_COST));
+    replaceMap.set(script.scriptToUnits("ॠॄ"), replaceMap.get(script.scriptToUnits("ॠॄ"))?.set(script.scriptToUnits("र्"), R_RI_COST));
+    replaceMap.set(script.scriptToUnits("ॠॄ"), replaceMap.get(script.scriptToUnits("ॠॄ"))?.set(script.scriptToUnits("ऋ"), R_RI_COST));
+    replaceMap.set(script.scriptToUnits("ॠॄ"), replaceMap.get(script.scriptToUnits("ॠॄ"))?.set(script.scriptToUnits("ॠ"), R_RI_COST));
 
-    replaceMap.set(script.sciptToUnits("य्"), replaceMap.get(script.sciptToUnits("य्"))?.set(script.sciptToUnits("ऐ"), Y_EI_COST));
-    replaceMap.set(script.sciptToUnits("य्"), replaceMap.get(script.sciptToUnits("य्"))?.set(script.sciptToUnits("ऐो"), Y_EI_COST));
-    replaceMap.set(script.sciptToUnits("य्"), replaceMap.get(script.sciptToUnits("य्"))?.set(script.sciptToUnits("ऐोो"), Y_EI_COST));
-    replaceMap.set(script.sciptToUnits("ऐ"), replaceMap.get(script.sciptToUnits("ऐ"))?.set(script.sciptToUnits("य्"), Y_EI_COST));
-    replaceMap.set(script.sciptToUnits("ऐो"), replaceMap.get(script.sciptToUnits("ऐो"))?.set(script.sciptToUnits("य्"), Y_EI_COST));
-    replaceMap.set(script.sciptToUnits("ऐोो"), replaceMap.get(script.sciptToUnits("ऐोो"))?.set(script.sciptToUnits("य्"), Y_EI_COST));
+    replaceMap.set(script.scriptToUnits("य्"), replaceMap.get(script.scriptToUnits("य्"))?.set(script.scriptToUnits("ऐ"), Y_EI_COST));
+    replaceMap.set(script.scriptToUnits("य्"), replaceMap.get(script.scriptToUnits("य्"))?.set(script.scriptToUnits("ऐो"), Y_EI_COST));
+    replaceMap.set(script.scriptToUnits("य्"), replaceMap.get(script.scriptToUnits("य्"))?.set(script.scriptToUnits("ऐोो"), Y_EI_COST));
+    replaceMap.set(script.scriptToUnits("ऐ"), replaceMap.get(script.scriptToUnits("ऐ"))?.set(script.scriptToUnits("य्"), Y_EI_COST));
+    replaceMap.set(script.scriptToUnits("ऐो"), replaceMap.get(script.scriptToUnits("ऐो"))?.set(script.scriptToUnits("य्"), Y_EI_COST));
+    replaceMap.set(script.scriptToUnits("ऐोो"), replaceMap.get(script.scriptToUnits("ऐोो"))?.set(script.scriptToUnits("य्"), Y_EI_COST));
     
     /*
     for (const [initial, replacementMap] of replaceMap.entries()) {
