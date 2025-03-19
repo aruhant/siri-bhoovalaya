@@ -13,9 +13,9 @@ public class WarnsdorffHamiltonianPathFinder
 
     // Updated constraints based on your requirements
     private readonly int maxConsecutiveVowels = 2;
-    private readonly int maxConsecutiveConsonants = 3;
+    private readonly int maxConsecutiveConsonants = 2;
     private readonly int maxAttempts = 10000;
-    int numberOfConsonants = 3;
+    int numberOfConsonants => maxConsecutiveConsonants;
     public WarnsdorffHamiltonianPathFinder(ToroidalGridHologram hologram, int[,] gridValues)
     {
         this.hologram = hologram;
