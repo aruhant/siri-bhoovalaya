@@ -222,7 +222,7 @@ else
     // Configure the hologram to allow diagonal movement
     InitializeToroidalGrid(hologram, gridValues);
 
-    var solver2 = new IterativeSearch2(hologram, gridValues);
+    var solver2 = new WarnsdorffHamiltonianPathFinder(hologram, gridValues);
 
     HashSet<string> seen = new HashSet<string>();
     while (true)

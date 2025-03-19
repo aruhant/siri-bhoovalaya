@@ -3,7 +3,7 @@
 using System.Diagnostics;
 using System.Text;
 
-public class IterativeSearch2
+public class WarnsdorffHamiltonianPathFinder
 {
     private readonly ToroidalGridHologram hologram;
     private readonly int[,] gridValues;
@@ -16,7 +16,7 @@ public class IterativeSearch2
     private readonly int maxConsecutiveConsonants = 3;
     private readonly int maxAttempts = 10000;
     int numberOfConsonants = 3;
-    public IterativeSearch2(ToroidalGridHologram hologram, int[,] gridValues)
+    public WarnsdorffHamiltonianPathFinder(ToroidalGridHologram hologram, int[,] gridValues)
     {
         this.hologram = hologram;
         this.gridValues = gridValues;
