@@ -1,7 +1,7 @@
 # The Siri Bhoovalaya Project: Decrypting Siri Bhoovalaya 
 
 
-Siri Bhoovalaya is a unique ancient Jain manuscript composed entirely in a numerical script. These numbers correspond to syllables across 718 languages, integrating knowledge from multiple sciences and cultural texts. The Siri Bhoovalaya Project aims to develop a comprehensive automated decoding system with simulations, while spreading awareness through our YouTube course. [YouTube Channel: Siri Bhoovalaya](https://www.youtube.com/@siri-bhoovalaya). We are grateful for the attention this project has garnered, including being featured in [The Times of India](https://timesofindia.indiatimes.com/city/bhopal/young-scholar-develops-software-to-decode-ancient-jain-epic-siri-bhoovalaya/articleshow/117573506.cms) and [Central Chronicle](https://centralchronicle.com/epaper/index.php?pgno=12&date1=2025-01-17)
+Siri Bhoovalaya is a unique ancient Jain manuscript composed entirely in a numerical script. These numbers correspond to syllables across 718 languages, integrating knowledge from multiple sciences and cultural texts. The Siri Bhoovalaya Project aims to develop a comprehensive automated decoding system with simulations, while spreading awareness through our [YouTube course](https://www.youtube.com/@siri-bhoovalaya). We are grateful for the attention this project has garnered, including being featured in [The Times of India](https://timesofindia.indiatimes.com/city/bhopal/young-scholar-develops-software-to-decode-ancient-jain-epic-siri-bhoovalaya/articleshow/117573506.cms) and [Central Chronicle](https://centralchronicle.com/epaper/index.php?pgno=12&date1=2025-01-17)
 
 ### Examples
 #### First Chakra Decoded (Kannada verse)
